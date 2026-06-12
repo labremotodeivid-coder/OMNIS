@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OMNIS - Experimentos</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/experimentos.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-logo">
+      <a href="../index.html"><img src="../assets/images/logo.png" alt="OMNIS Logo" class="logo-img" /></a>
+    </div>
+    <ul class="nav-links">
+      <li><a href="jogos.html">Jogos</a></li>
+      <li><a href="experimentos.html" class="ativo">Experimentos</a></li>
+      <li><a href="teoria.html">Teoria</a></li>
+      <li><a href="comunidade.html">Comunidade</a></li>
+    </ul>
+    <div class="nav-buttons">
+      <a href="#" class="btn-login">Entrar</a>
+      <a href="#" class="btn-cadastro">Cadastrar</a>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <section class="exp-header">
+    <h1>🔬 Experimentos Remotos</h1>
+    <p>Controle laboratórios reais de qualquer lugar do mundo</p>
+    <button class="btn-refresh" onclick="atualizarStatus()" id="btnRefresh">
+      ↻ Atualizar disponibilidade
+    </button>
+  </section>
+
+  <!-- LISTA DE EXPERIMENTOS -->
+  <section class="exp-container">
+    <div class="exp-grid" id="expGrid">
+
+      <!-- CARD: TRILHO DE AR -->
+      <div class="exp-card" onclick="abrirExperimento('trilho')">
+        <div class="exp-card-img">
+          <img src="https://raw.githubusercontent.com/labremotodeivid-coder/labremoto/main/experimentos_imagens/trilho-de-ar.jpg"
+               alt="Trilho de Ar" onerror="this.parentElement.classList.add('sem-imagem')" />
+          <div class="exp-badge" id="badge-trilho">
+            <span class="badge-spinner"></span>
+          </div>
+          <button class="exp-favorito" onclick="toggleFavorito(event,'trilho')" id="fav-trilho">☆</button>
+        </div>
+        <div class="exp-card-body">
+          <h3>Trilho de Ar</h3>
+          <p>Estudo de MRU e Leis de Newton com carrinho em trilho de ar comprimido.</p>
+          <div class="exp-tempo" id="tempo-trilho" style="display:none">
+            ⏱ Disponível em <span id="countdown-trilho">--:--</span>
+          </div>
+          <div class="exp-card-footer">Ver detalhes →</div>
+        </div>
+      </div>
+
+      <!-- CARD: ANEL DE THOMSON -->
+      <div class="exp-card" onclick="abrirExperimento('thomson')">
+        <div class="exp-card-img">
+          <img src="https://raw.githubusercontent.com/labremotodeivid-coder/labremoto/main/experimentos_imagens/anel-de-thomson.jpg"
+               alt="Anel de Thomson" onerror="this.parentElement.classList.add('sem-imagem')" />
+          <div class="exp-badge" id="badge-thomson">
+            <span class="badge-spinner"></span>
+          </div>
+          <button class="exp-favorito" onclick="toggleFavorito(event,'thomson')" id="fav-thomson">☆</button>
+        </div>
+        <div class="exp-card-body">
+          <h3>Anel de Thomson</h3>
+          <p>Experimento sobre eletromagnetismo e indução magnética.</p>
+          <div class="exp-tempo" id="tempo-thomson" style="display:none">
+            ⏱ Disponível em <span id="countdown-thomson">--:--</span>
+          </div>
+          <div class="exp-card-footer">Ver detalhes →</div>
+        </div>
+      </div>
+
+      <!-- CARD: TITULAÇÃO -->
+      <div class="exp-card" onclick="abrirExperimento('titulacao')">
+        <div class="exp-card-img">
+          <img src="https://raw.githubusercontent.com/labremotodeivid-coder/labremoto/main/experimentos_imagens/titulacao.jpg"
+               alt="Titulação" onerror="this.parentElement.classList.add('sem-imagem')" />
+          <div class="exp-badge" id="badge-titulacao">
+            <span class="badge-spinner"></span>
+          </div>
+          <button class="exp-favorito" onclick="toggleFavorito(event,'titulacao')" id="fav-titulacao">☆</button>
+        </div>
+        <div class="exp-card-body">
+          <h3>Titulação</h3>
+          <p>Experimento de titulação ácido-base com HCl e NaOH.</p>
+          <div class="exp-tempo" id="tempo-titulacao" style="display:none">
+            ⏱ Disponível em <span id="countdown-titulacao">--:--</span>
+          </div>
+          <div class="exp-card-footer">Ver detalhes →</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- MODAL DO EXPERIMENTO -->
+  <div class="exp-modal" id="expModal">
+    <div class="exp-modal-content" id="expModalContent">
+      <!-- conteúdo inserido via JS -->
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <img src="../assets/images/logo.png" alt="OMNIS" class="footer-logo" />
+    <p>© 2025 OMNIS - Integrated Educational Platform. Todos os direitos reservados.</p>
+  </footer>
+
+  <script src="../assets/js/script.js"></script>
+  <script src="../assets/js/experimentos.js"></script>
+  <script>
+    // Animação de saída ao navegar
+    document.querySelectorAll('.nav-logo a, .nav-links a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href && href !== '#') {
+          e.preventDefault();
+          document.body.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+          document.body.style.opacity = '0';
+          document.body.style.transform = 'translateY(-20px)';
+          setTimeout(() => { window.location.href = href; }, 400);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

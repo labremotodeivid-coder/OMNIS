@@ -1,0 +1,171 @@
+/* ===== TEORIA PAGE ===== */
+
+/* Animação de entrada da página */
+body {
+  animation: paginaEntrar 0.6s ease forwards;
+}
+
+@keyframes paginaEntrar {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.teoria-header {
+  padding: 120px 60px 40px;
+  text-align: center;
+  background: radial-gradient(ellipse at top, rgba(0, 100, 255, 0.1) 0%, transparent 60%), #0a0e1a;
+}
+
+.teoria-header h1 {
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.teoria-header p {
+  font-size: 17px;
+  color: #b0c4de;
+}
+
+/* ===== TABS DAS MATÉRIAS ===== */
+.teoria-container {
+  padding: 40px 60px 80px;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.materias-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tab-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(0, 180, 255, 0.2);
+  color: #b0c4de;
+  padding: 12px 28px;
+  border-radius: 50px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.tab-btn:hover {
+  border-color: #00b4ff;
+  color: #00b4ff;
+}
+
+.tab-btn.ativo {
+  background: linear-gradient(135deg, #00b4ff, #7b2fff);
+  border-color: transparent;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* ===== CONTEÚDO DAS MATÉRIAS ===== */
+.materia-content {
+  display: none;
+}
+
+.materia-content.ativo {
+  display: block;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== CARDS DE TEORIA ===== */
+.cards-teoria {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.card-teoria {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(0, 180, 255, 0.15);
+  border-radius: 16px;
+  padding: 28px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  transition: transform 0.3s, border-color 0.3s;
+}
+
+.card-teoria:hover {
+  transform: translateY(-6px);
+  border-color: rgba(0, 180, 255, 0.5);
+}
+
+.card-teoria-icon {
+  font-size: 36px;
+}
+
+.card-teoria h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.card-teoria p {
+  font-size: 13px;
+  color: #b0c4de;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.btn-card {
+  text-decoration: none;
+  background: linear-gradient(135deg, #00b4ff, #7b2fff);
+  color: #ffffff;
+  padding: 8px 22px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 6px;
+  transition: opacity 0.3s;
+}
+
+.btn-card:hover {
+  opacity: 0.85;
+}
+
+/* ===== ABA ATIVA NA NAVBAR ===== */
+.nav-links a.ativo {
+  color: #00b4ff;
+}
+
+/* ===== RESPONSIVO ===== */
+@media (max-width: 768px) {
+  .teoria-header {
+    padding: 100px 24px 30px;
+  }
+
+  .teoria-container {
+    padding: 30px 20px 60px;
+  }
+
+  .tab-btn {
+    padding: 10px 18px;
+    font-size: 13px;
+  }
+
+  .cards-teoria {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+}

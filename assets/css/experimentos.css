@@ -1,0 +1,450 @@
+/* ===== EXPERIMENTOS PAGE ===== */
+
+body {
+  animation: paginaEntrar 0.6s ease forwards;
+}
+
+@keyframes paginaEntrar {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* HEADER */
+.exp-header {
+  padding: 120px 60px 40px;
+  text-align: center;
+  background: radial-gradient(ellipse at top, rgba(0, 100, 255, 0.1) 0%, transparent 60%), #0a0e1a;
+}
+
+.exp-header h1 {
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.exp-header p {
+  font-size: 17px;
+  color: #b0c4de;
+  margin-bottom: 24px;
+}
+
+.btn-refresh {
+  background: rgba(0, 180, 255, 0.1);
+  border: 1px solid rgba(0, 180, 255, 0.35);
+  color: #00b4ff;
+  padding: 10px 24px;
+  border-radius: 50px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-refresh:hover {
+  background: rgba(0, 180, 255, 0.2);
+}
+
+.btn-refresh.girando {
+  animation: girar 1s linear infinite;
+}
+
+@keyframes girar {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* CONTAINER */
+.exp-container {
+  padding: 40px 60px 80px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.exp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 28px;
+}
+
+/* CARD */
+.exp-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(0,180,255,0.15);
+  border-radius: 18px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.exp-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(0,180,255,0.5);
+  box-shadow: 0 12px 40px rgba(0,100,255,0.15);
+}
+
+/* IMAGEM */
+.exp-card-img {
+  position: relative;
+  height: 200px;
+  background: rgba(255,255,255,0.05);
+  overflow: hidden;
+}
+
+.exp-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.exp-card-img.sem-imagem::after {
+  content: '🔬';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 52px;
+}
+
+/* BADGE STATUS */
+.exp-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.exp-badge.carregando {
+  background: rgba(0,0,0,0.55);
+}
+
+.exp-badge.disponivel {
+  background: rgba(141, 182, 0, 0.92);
+  color: #fff;
+}
+
+.exp-badge.ocupado {
+  background: rgba(220, 38, 38, 0.92);
+  color: #fff;
+}
+
+.badge-spinner {
+  width: 13px;
+  height: 13px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* FAVORITO */
+.exp-favorito {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.5);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.exp-favorito:hover {
+  transform: scale(1.2);
+}
+
+.exp-favorito.ativo {
+  color: gold;
+}
+
+/* BODY DO CARD */
+.exp-card-body {
+  padding: 20px;
+}
+
+.exp-card-body h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.exp-card-body p {
+  font-size: 14px;
+  color: #b0c4de;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.exp-tempo {
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220,38,38,0.3);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: #f87171;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.exp-card-footer {
+  font-size: 13px;
+  color: #00b4ff;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* ===== MODAL DO EXPERIMENTO ===== */
+.exp-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(6px);
+}
+
+.exp-modal.aberto {
+  display: flex;
+  animation: fadeInModal 0.3s ease;
+}
+
+@keyframes fadeInModal {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.exp-modal-content {
+  background: #0e1628;
+  border: 1px solid rgba(0,180,255,0.2);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 32px;
+  position: relative;
+}
+
+.modal-fechar {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: rgba(255,255,255,0.08);
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.modal-fechar:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+/* CÂMERA */
+.camera-container {
+  width: 100%;
+  height: 280px;
+  background: #000;
+  border-radius: 14px;
+  border: 2px solid #22304a;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.camera-container img#cameraFeed {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+.camera-status {
+  text-align: center;
+  color: rgba(255,255,255,0.6);
+  font-size: 13px;
+}
+
+.camera-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(255,255,255,0.15);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 12px;
+}
+
+.camera-selector {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.6);
+  border-radius: 20px;
+  padding: 4px 10px;
+  display: flex;
+  gap: 8px;
+}
+
+.cam-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.cam-btn.ativo {
+  background: #8db600;
+  color: #000;
+}
+
+/* CONTROLES */
+.controles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.controle-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(0,180,255,0.15);
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.controle-card label {
+  font-size: 12px;
+  color: #b0c4de;
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.controle-card input[type=range] {
+  width: 100%;
+  accent-color: #00b4ff;
+}
+
+.controle-card select {
+  width: 100%;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(0,180,255,0.2);
+  border-radius: 8px;
+  color: #fff;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+.controle-card .valor {
+  font-size: 18px;
+  font-weight: 700;
+  color: #00b4ff;
+  text-align: center;
+  margin-top: 6px;
+}
+
+/* BOTÕES DE AÇÃO */
+.acoes-grid {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.btn-acao {
+  padding: 10px 22px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-acao.primario {
+  background: linear-gradient(135deg, #00b4ff, #7b2fff);
+  color: #fff;
+}
+
+.btn-acao.primario:hover {
+  opacity: 0.85;
+  transform: translateY(-2px);
+}
+
+.btn-acao.secundario {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(0,180,255,0.25);
+  color: #b0c4de;
+}
+
+.btn-acao.secundario:hover {
+  border-color: #00b4ff;
+  color: #00b4ff;
+}
+
+.btn-acao.perigo {
+  background: rgba(220,38,38,0.15);
+  border: 1px solid rgba(220,38,38,0.35);
+  color: #f87171;
+}
+
+.btn-acao.perigo:hover {
+  background: rgba(220,38,38,0.25);
+}
+
+/* GRÁFICO / LOG */
+.log-box {
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(0,180,255,0.1);
+  border-radius: 12px;
+  padding: 14px;
+  height: 120px;
+  overflow-y: auto;
+  font-size: 12px;
+  color: #8db600;
+  font-family: monospace;
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+  .exp-header { padding: 100px 24px 30px; }
+  .exp-container { padding: 30px 20px 60px; }
+  .exp-grid { grid-template-columns: 1fr; }
+  .exp-modal-content { padding: 20px; }
+  .controles-grid { grid-template-columns: 1fr 1fr; }
+}

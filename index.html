@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OMNIS - Integrated Educational Platform</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-logo">
+      <a href="index.html"><img src="assets/images/logo.png" alt="OMNIS Logo" class="logo-img" /></a>
+    </div>
+    <ul class="nav-links">
+      <li><a href="pages/jogos.html">Jogos</a></li>
+      <li><a href="pages/experimentos.html">Experimentos</a></li>
+      <li><a href="pages/teoria.html">Teoria</a></li>
+      <li><a href="pages/comunidade.html">Comunidade</a></li>
+    </ul>
+    <div class="nav-buttons">
+      <a href="#" class="btn-login">Entrar</a>
+      <a href="#" class="btn-cadastro">Cadastrar</a>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-text">
+      <h1>Bem-vindo à <span class="destaque">OMNIS</span></h1>
+      <p class="subtitulo">A plataforma educacional que reúne <strong>tudo</strong> em um só lugar. Videoaulas, experimentos remotos, jogos educativos e uma comunidade incrível esperando por você.</p>
+      <div class="hero-btns">
+        <a href="#" class="btn-primary">Começar agora</a>
+        <a href="#sobre" class="btn-secondary">Saiba mais</a>
+      </div>
+    </div>
+    <div class="hero-mascote">
+      <img src="assets/images/mascote.png" alt="OMNI - Mascote da OMNIS" />
+    </div>
+  </section>
+
+  <!-- SOBRE -->
+  <section class="sobre" id="sobre">
+    <h2>O que é a <span class="destaque">OMNIS</span>?</h2>
+    <p>OMNIS é uma plataforma educacional integrada que conecta alunos ao conhecimento de forma dinâmica e inovadora. Aqui você aprende com vídeos, experimenta na prática, evolui com jogos e compartilha com a comunidade.</p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">🎮</div>
+        <h3>Jogos</h3>
+        <p>Aprenda jogando com jogos educativos incríveis e desafios interativos.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔬</div>
+        <h3>Experimentos</h3>
+        <p>Realize experimentos remotos e descubra a ciência na prática.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📚</div>
+        <h3>Teoria</h3>
+        <p>Videoaulas completas com os melhores conteúdos educacionais.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌐</div>
+        <h3>Comunidade</h3>
+        <p>Conecte-se com outros alunos, tire dúvidas e compartilhe conhecimento.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <img src="assets/images/logo.png" alt="OMNIS" class="footer-logo" />
+    <p>© 2025 OMNIS - Integrated Educational Platform. Todos os direitos reservados.</p>
+  </footer>
+
+  <script src="assets/js/script.js"></script>
+  <script>
+    // Animação de saída ao navegar para outra página
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href && href !== '#') {
+          e.preventDefault();
+          document.body.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+          document.body.style.opacity = '0';
+          document.body.style.transform = 'translateY(-20px)';
+          setTimeout(() => {
+            window.location.href = href;
+          }, 400);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
