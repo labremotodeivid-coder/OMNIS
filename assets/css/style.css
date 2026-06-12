@@ -200,7 +200,7 @@ body {
 }
 
 .hero-mascote img {
-  width: 800px;
+  width: 420px;
   max-width: 100%;
   filter: drop-shadow(0 0 40px rgba(0, 180, 255, 0.3));
   animation: flutuar 3s ease-in-out infinite;
@@ -293,12 +293,11 @@ body {
 
 /* Esconde hamburguer no desktop */
 .nav-hamburger { display: none; }
-.nav-mobile-menu { display: none; }
 
 /* ===== RESPONSIVO MOBILE ===== */
 @media (max-width: 768px) {
 
-  /* NAVBAR — vira hamburguer */
+  /* NAVBAR */
   .navbar {
     padding: 10px 20px;
     flex-wrap: nowrap;
@@ -308,8 +307,8 @@ body {
 
   .logo-img { height: 48px; }
 
-  /* Esconde links e botões no mobile — menu hamburguer aparece */
-  .nav-links  { display: none; }
+  /* Esconde links e botões no mobile */
+  .nav-links   { display: none; }
   .nav-buttons { display: none; }
 
   /* Botão hamburguer */
@@ -330,9 +329,8 @@ body {
     transition: all 0.3s;
   }
 
-  /* Menu mobile aberto */
+  /* Menu mobile — oculto por padrão, visível quando .aberto */
   .nav-mobile-menu {
-    display: none;
     position: fixed;
     top: 64px;
     left: 0;
@@ -343,9 +341,12 @@ body {
     padding: 16px 0;
     z-index: 999;
     backdrop-filter: blur(10px);
+    display: none;
   }
 
-  .nav-mobile-menu.aberto { display: flex; }
+  .nav-mobile-menu.aberto {
+    display: flex !important;
+  }
 
   .nav-mobile-menu a {
     text-decoration: none;
@@ -392,7 +393,7 @@ body {
   }
 
   .hero-mascote img {
-    width: 800px;
+    width: 220px;
     margin-bottom: 10px;
   }
 
