@@ -4,22 +4,27 @@
 
 const PROXY = 'https://omnis-proxy.labremotodeivid.workers.dev';
 const BASE  = 'https://aneldethomson-panel.unifei.edu.br';
-
-// Envia a URL alvo no header X-Target-URL
-// Assim evita qualquer problema de encode/decode na query string
-function proxyFetch(path, opts = {}) {
-  return fetch(PROXY, {
-    ...opts,
-    headers: {
-      'Content-Type':  'application/json',
-      'X-Target-URL':  BASE + path,
-      ...(opts.headers || {}),
-    },
-  });
-}
-
+const WS_URL = 'wss://aneldethomson-cam.unifei.edu.br';
 const TUTORIAL_URL = 'https://raw.githubusercontent.com/labremotodeivid-coder/labremoto/main/experimentos_info/anel_de_thomson_info.md';
-const WS_URL       = 'wss://aneldethomson-cam.unifei.edu.br';
+
+// =====================================================================
+// PROXY FETCH — envia URL no header X-Target-URL
+// Evita encode/decode da query string
+// =====================================================================
+async function pFetch(path, method = 'POST', ms = 8000) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), ms);
+  try {
+    const res = await fetch(PROXY, {
+      method,
+      signal: controller.signal,
+      headers: { 'X-Target-URL': BASE + path },
+    });
+    return res;
+  } finally {
+    clearTimeout(id);
+  }
+}
 
 // ── Estado de sessão ─────────────────────────────────────────────────
 let experimentoPronto    = false;
@@ -72,7 +77,7 @@ async function resetInicial() {
 
   // Etapa 1: beacon
   try {
-    const res = await fetchComTimeout('/beacon', { method: 'POST' }, 5000);
+    const res = await pFetch('/beacon', 'POST', 5000);
     if (!res.ok) throw new Error('beacon falhou');
   } catch (_) {
     servidorIndisponivel = true;
@@ -83,7 +88,7 @@ async function resetInicial() {
 
   // Etapa 2: session/enter
   try {
-    const res = await fetchComTimeout('/session/enter', { method: 'POST' }, 8000);
+    const res = await pFetch('/session/enter', 'POST', 8000);
     if (res.status === 409) {
       const data     = await res.json();
       const restante = data.remaining || 0;
@@ -111,17 +116,17 @@ async function resetInicial() {
 }
 
 // =====================================================================
-// KEEP-ALIVE
+// KEEP-ALIVE — POST /read a cada 5s
 // =====================================================================
 function iniciarKeepAlive() {
   clearInterval(timerKeepAlive);
   timerKeepAlive = setInterval(async () => {
-    try { await fetchComTimeout('/arduino/api/v1/read', { method: 'POST' }, 3000); } catch (_) {}
+    try { await pFetch('/arduino/api/v1/read', 'POST', 3000); } catch (_) {}
   }, 5000);
 }
 
 // =====================================================================
-// TIMER DE SESSÃO
+// TIMER DE SESSÃO — 10 minutos
 // =====================================================================
 function iniciarTimerSessao() {
   clearInterval(timerSessao);
@@ -178,7 +183,7 @@ function atualizarTimerOcupado(seg) {
 
 async function reverificarEEntrar() {
   try {
-    const res = await fetchComTimeout('/session/status', { method: 'POST' }, 6000);
+    const res = await pFetch('/session/status', 'POST', 6000);
     if (res.ok) {
       const data     = await res.json();
       const ocupado  = data.busy      || false;
@@ -240,7 +245,7 @@ function atualizarPreparando(n) {
 // =====================================================================
 async function executarResetHardware() {
   if (resetCancelado) return;
-  try { await fetchComTimeout('/arduino/api/v1/write/888;', { method: 'POST' }, 10000); } catch (_) {}
+  try { await pFetch('/arduino/api/v1/write/888;', 'POST', 10000); } catch (_) {}
 }
 
 // =====================================================================
@@ -257,18 +262,16 @@ function desbloquearControles() {
 }
 
 // =====================================================================
-// COMANDOS DAS BOBINAS — URLs corretas com ; preservado
+// COMANDOS DAS BOBINAS
 // =====================================================================
 async function toggleBobinaA(ligar) {
-  const cmd = ligar ? '001' : '002';
-  await postCmd(cmd);
+  await postCmd(ligar ? '001' : '002');
   bobinaALigada = ligar;
   atualizarEstadoBobina('A', ligar);
 }
 
 async function toggleBobinaB(ligar) {
-  const cmd = ligar ? '003' : '004';
-  await postCmd(cmd);
+  await postCmd(ligar ? '003' : '004');
   bobinaBLigada = ligar;
   atualizarEstadoBobina('B', ligar);
 }
@@ -296,16 +299,15 @@ async function lerCorrenteA() {
   document.getElementById('btnLerA').disabled = true;
   document.getElementById('correnteADisplay').textContent = '...';
   try {
-    await fetchComTimeout('/arduino/api/v1/write/006;', { method: 'POST' }, 5000);
+    await pFetch('/arduino/api/v1/write/006;', 'POST', 5000);
     await delay(1200);
-    const res  = await fetchComTimeout('/arduino/api/v1/read', { method: 'POST' }, 5000);
+    const res  = await pFetch('/arduino/api/v1/read', 'POST', 5000);
     const body = await res.text();
     correnteA  = parseCorrente(body);
     exibirCorrente('A', correnteA);
   } catch (_) {}
   lendoA = false;
-  if (!document.getElementById('btnLerA').disabled === false)
-    document.getElementById('btnLerA').disabled = false;
+  document.getElementById('btnLerA').disabled = false;
 }
 
 async function lerCorrenteB() {
@@ -314,9 +316,9 @@ async function lerCorrenteB() {
   document.getElementById('btnLerB').disabled = true;
   document.getElementById('correnteBDisplay').textContent = '...';
   try {
-    await fetchComTimeout('/arduino/api/v1/write/005;', { method: 'POST' }, 5000);
+    await pFetch('/arduino/api/v1/write/005;', 'POST', 5000);
     await delay(1200);
-    const res  = await fetchComTimeout('/arduino/api/v1/read', { method: 'POST' }, 5000);
+    const res  = await pFetch('/arduino/api/v1/read', 'POST', 5000);
     const body = await res.text();
     correnteB  = parseCorrente(body);
     exibirCorrente('B', correnteB);
@@ -365,18 +367,17 @@ function parseCorrente(body) {
 }
 
 // =====================================================================
-// POST DE COMANDO — URL com ; preservado
+// POST DE COMANDO
 // =====================================================================
 async function postCmd(cmd) {
   statusAtual = cmd;
   atualizarSinal();
   try {
-    const path = `/arduino/api/v1/write/${cmd};`;
-    console.log('Enviando comando:', BASE + path);
-    const res = await fetchComTimeout(path, { method: 'POST' }, 10000);
+    console.log('Enviando comando:', BASE + '/arduino/api/v1/write/' + cmd + ';');
+    const res = await pFetch(`/arduino/api/v1/write/${cmd};`, 'POST', 10000);
     console.log('Resposta:', res.status);
   } catch (e) {
-    console.error('Erro comando:', e);
+    console.error('Erro:', e);
     statusAtual = 'ERRO';
     atualizarSinal(true);
   }
@@ -501,8 +502,8 @@ function sair() {
   clearInterval(timerPreparando);
   resetCancelado = true;
   desconectarCamera();
-  setTimeout(() => { 
-    proxyFetch('/arduino/api/v1/write/888;', { method: 'POST' }).catch(() => {}); 
+  setTimeout(() => {
+    pFetch('/arduino/api/v1/write/888;', 'POST', 5000).catch(() => {});
   }, 600);
   document.body.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
   document.body.style.opacity    = '0';
@@ -526,14 +527,14 @@ function tentarNovamente() {
 }
 
 // =====================================================================
-// TUTORIAL
+// TUTORIAL — fetch direto, sem proxy
 // =====================================================================
 async function fetchTutorial() {
   const body = document.getElementById('tutorialBody');
   if (!body) return;
   body.innerHTML = '<div class="cam-spinner"></div>';
   try {
-    const res  = await fetchComTimeout(TUTORIAL_URL, {}, 10000);
+    const res  = await fetch(TUTORIAL_URL);
     const text = await res.text();
     body.textContent = res.ok ? text : 'Tutorial indisponível';
   } catch (_) { body.textContent = 'Erro ao carregar tutorial'; }
@@ -564,12 +565,3 @@ function atualizarUI() {
 // HELPERS
 // =====================================================================
 function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-// Todas as chamadas ao servidor passam pelo proxyFetch com timeout
-async function fetchComTimeout(path, opts = {}, ms = 8000) {
-  const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), ms);
-  try {
-    return await proxyFetch(path, { ...opts, signal: controller.signal });
-  } finally { clearTimeout(id); }
-}
