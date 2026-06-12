@@ -1,16 +1,25 @@
 // =====================================================================
 // thomson.js — Anel de Thomson
-// Fiel ao anel_de_thomson_screen.dart
 // =====================================================================
 
-const PROXY      = 'https://omnis-proxy.labremotodeivid.workers.dev';
-const BASE       = 'https://aneldethomson-panel.unifei.edu.br';
-const READ_URL   = `${PROXY}?target=${encodeURIComponent(BASE + '/arduino/api/v1/read')}`;
-const WRITE_BASE = `${PROXY}?target=${encodeURIComponent(BASE + '/arduino/api/v1/write/')}`;
-const BEACON_URL = `${PROXY}?target=${encodeURIComponent(BASE + '/beacon')}`;
-const ENTER_URL  = `${PROXY}?target=${encodeURIComponent(BASE + '/session/enter')}`;
-const STATUS_URL = `${PROXY}?target=${encodeURIComponent(BASE + '/session/status')}`;
-const RESET_URL  = `${PROXY}?target=${encodeURIComponent(BASE + '/arduino/api/v1/write/888;')}`;
+const PROXY = 'https://omnis-proxy.labremotodeivid.workers.dev';
+const BASE  = 'https://aneldethomson-panel.unifei.edu.br';
+
+// Monta URL do proxy — o ponto e vírgula NÃO pode ser encodado
+function proxyUrl(path) {
+  return `${PROXY}?target=${PROXY_ENCODE(BASE + path)}`;
+}
+
+// Encode da URL alvo preservando o ; do Arduino
+function PROXY_ENCODE(url) {
+  return encodeURIComponent(url).replace(/%3B/gi, ';');
+}
+
+const READ_URL   = proxyUrl('/arduino/api/v1/read');
+const BEACON_URL = proxyUrl('/beacon');
+const ENTER_URL  = proxyUrl('/session/enter');
+const STATUS_URL = proxyUrl('/session/status');
+const RESET_URL  = proxyUrl('/arduino/api/v1/write/888;');
 
 const TUTORIAL_URL = 'https://raw.githubusercontent.com/labremotodeivid-coder/labremoto/main/experimentos_info/anel_de_thomson_info.md';
 const WS_URL       = 'wss://aneldethomson-cam.unifei.edu.br';
@@ -56,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // =====================================================================
-// FLUXO PRINCIPAL — fiel ao _resetInicial() Dart
+// FLUXO PRINCIPAL
 // =====================================================================
 async function resetInicial() {
   experimentoPronto    = false;
@@ -105,7 +114,7 @@ async function resetInicial() {
 }
 
 // =====================================================================
-// KEEP-ALIVE — POST /read a cada 5s (watchdog = 10s)
+// KEEP-ALIVE
 // =====================================================================
 function iniciarKeepAlive() {
   clearInterval(timerKeepAlive);
@@ -115,21 +124,17 @@ function iniciarKeepAlive() {
 }
 
 // =====================================================================
-// TIMER DE SESSÃO — 10 minutos
+// TIMER DE SESSÃO
 // =====================================================================
 function iniciarTimerSessao() {
   clearInterval(timerSessao);
   sessaoSegundos = 600;
   sessaoExpiraEm = Date.now() + 600000;
-
   timerSessao = setInterval(() => {
     const restante = Math.max(0, Math.floor((sessaoExpiraEm - Date.now()) / 1000));
     sessaoSegundos = restante;
     atualizarTimer();
-    if (restante <= 0) {
-      clearInterval(timerSessao);
-      expirarSessao();
-    }
+    if (restante <= 0) { clearInterval(timerSessao); expirarSessao(); }
   }, 1000);
 }
 
@@ -148,9 +153,7 @@ function atualizarTimer() {
 }
 
 function expirarSessao() {
-  if (confirm('Seu tempo de 10 minutos expirou.\nO experimento será resetado e liberado para outros usuários.\n\nClique OK para sair.')) {
-    sair();
-  }
+  if (confirm('Seu tempo de 10 minutos expirou.\nClique OK para sair.')) sair();
 }
 
 // =====================================================================
@@ -200,7 +203,7 @@ async function reverificarEEntrar() {
 }
 
 // =====================================================================
-// PREPARAÇÃO INICIAL
+// PREPARAÇÃO
 // =====================================================================
 function iniciarPreparacao() {
   mostrarOverlay('overlayPreparando');
@@ -232,9 +235,7 @@ function atualizarPreparando(n) {
     ringFg.style.strokeDashoffset = offset;
     ringFg.style.stroke = n > 5 ? 'rgba(255,255,255,0.7)' : n > 3 ? 'orange' : '#f87171';
   }
-  if (contEl) {
-    contEl.style.color = n > 5 ? 'var(--cor-ambar)' : n > 3 ? 'orange' : '#f87171';
-  }
+  if (contEl) contEl.style.color = n > 5 ? 'var(--cor-ambar)' : n > 3 ? 'orange' : '#f87171';
 }
 
 // =====================================================================
@@ -242,9 +243,7 @@ function atualizarPreparando(n) {
 // =====================================================================
 async function executarResetHardware() {
   if (resetCancelado) return;
-  try {
-    await fetchComTimeout(RESET_URL, { method: 'POST' }, 10000);
-  } catch (_) {}
+  try { await fetchComTimeout(RESET_URL, { method: 'POST' }, 10000); } catch (_) {}
 }
 
 // =====================================================================
@@ -261,16 +260,18 @@ function desbloquearControles() {
 }
 
 // =====================================================================
-// COMANDOS DAS BOBINAS
+// COMANDOS DAS BOBINAS — URLs corretas com ; preservado
 // =====================================================================
 async function toggleBobinaA(ligar) {
-  await postCmd(ligar ? '001' : '002');
+  const cmd = ligar ? '001' : '002';
+  await postCmd(cmd);
   bobinaALigada = ligar;
   atualizarEstadoBobina('A', ligar);
 }
 
 async function toggleBobinaB(ligar) {
-  await postCmd(ligar ? '003' : '004');
+  const cmd = ligar ? '003' : '004';
+  await postCmd(cmd);
   bobinaBLigada = ligar;
   atualizarEstadoBobina('B', ligar);
 }
@@ -298,8 +299,7 @@ async function lerCorrenteA() {
   document.getElementById('btnLerA').disabled = true;
   document.getElementById('correnteADisplay').textContent = '...';
   try {
-    const writeUrl = `${PROXY}?target=${encodeURIComponent(BASE + '/arduino/api/v1/write/006;')}`;
-    await fetchComTimeout(writeUrl, { method: 'POST' }, 5000);
+    await fetchComTimeout(proxyUrl('/arduino/api/v1/write/006;'), { method: 'POST' }, 5000);
     await delay(1200);
     const res  = await fetchComTimeout(READ_URL, { method: 'POST' }, 5000);
     const body = await res.text();
@@ -307,7 +307,8 @@ async function lerCorrenteA() {
     exibirCorrente('A', correnteA);
   } catch (_) {}
   lendoA = false;
-  document.getElementById('btnLerA').disabled = false;
+  if (!document.getElementById('btnLerA').disabled === false)
+    document.getElementById('btnLerA').disabled = false;
 }
 
 async function lerCorrenteB() {
@@ -316,8 +317,7 @@ async function lerCorrenteB() {
   document.getElementById('btnLerB').disabled = true;
   document.getElementById('correnteBDisplay').textContent = '...';
   try {
-    const writeUrl = `${PROXY}?target=${encodeURIComponent(BASE + '/arduino/api/v1/write/005;')}`;
-    await fetchComTimeout(writeUrl, { method: 'POST' }, 5000);
+    await fetchComTimeout(proxyUrl('/arduino/api/v1/write/005;'), { method: 'POST' }, 5000);
     await delay(1200);
     const res  = await fetchComTimeout(READ_URL, { method: 'POST' }, 5000);
     const body = await res.text();
@@ -348,7 +348,7 @@ function exibirCorrente(bob, val) {
   dispEl.textContent = `${valorA} A`;
   dispEl.className   = `corrente-valor ${cor}`;
   if (subEl) {
-    subEl.textContent  = ehRuido ? 'ruído do sensor' : `${val} mA`;
+    subEl.textContent     = ehRuido ? 'ruído do sensor' : `${val} mA`;
     subEl.style.fontStyle = ehRuido ? 'italic' : 'normal';
   }
 }
@@ -368,15 +368,18 @@ function parseCorrente(body) {
 }
 
 // =====================================================================
-// POST DE COMANDO
+// POST DE COMANDO — URL com ; preservado
 // =====================================================================
 async function postCmd(cmd) {
   statusAtual = cmd;
   atualizarSinal();
   try {
-    const url = `${PROXY}?target=${encodeURIComponent(BASE + `/arduino/api/v1/write/${cmd};`)}`;
-    await fetchComTimeout(url, { method: 'POST' }, 10000);
-  } catch (_) {
+    const url = proxyUrl(`/arduino/api/v1/write/${cmd};`);
+    console.log('Enviando comando:', url); // debug
+    const res = await fetchComTimeout(url, { method: 'POST' }, 10000);
+    console.log('Resposta:', res.status);
+  } catch (e) {
+    console.error('Erro comando:', e);
     statusAtual = 'ERRO';
     atualizarSinal(true);
   }
@@ -501,9 +504,7 @@ function sair() {
   clearInterval(timerPreparando);
   resetCancelado = true;
   desconectarCamera();
-  setTimeout(() => {
-    fetch(RESET_URL, { method: 'POST' }).catch(() => {});
-  }, 600);
+  setTimeout(() => { fetch(RESET_URL, { method: 'POST' }).catch(() => {}); }, 600);
   document.body.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
   document.body.style.opacity    = '0';
   document.body.style.transform  = 'translateY(-20px)';
@@ -535,10 +536,8 @@ async function fetchTutorial() {
   try {
     const res  = await fetchComTimeout(TUTORIAL_URL, {}, 10000);
     const text = await res.text();
-    body.textContent = res.ok ? text : '# Tutorial indisponível';
-  } catch (_) {
-    body.textContent = '# Erro ao carregar tutorial';
-  }
+    body.textContent = res.ok ? text : 'Tutorial indisponível';
+  } catch (_) { body.textContent = 'Erro ao carregar tutorial'; }
 }
 
 function abrirTutorial()  { mostrarOverlay('overlayTutorial'); }
@@ -572,7 +571,5 @@ async function fetchComTimeout(url, opts = {}, ms = 8000) {
   const id = setTimeout(() => controller.abort(), ms);
   try {
     return await fetch(url, { ...opts, signal: controller.signal });
-  } finally {
-    clearTimeout(id);
-  }
+  } finally { clearTimeout(id); }
 }

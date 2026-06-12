@@ -74,91 +74,96 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     CONTEÚDO PRINCIPAL
+     CONTEÚDO PRINCIPAL — câmera ao lado dos controles
 ════════════════════════════════════════════════════════════════ -->
 <div class="thomson-body" id="mainBody">
+  <div class="thomson-layout">
 
-  <!-- CÂMERA — fiel ao ExperimentoCameraWidget -->
-  <div class="camera-box" id="cameraBox">
-    <img id="cameraFeed" alt="Feed câmera" style="display:none"/>
-    <div class="camera-placeholder" id="cameraPlaceholder">
-      <div class="cam-spinner"></div>
-      <span id="cameraStatus">Conectando à câmera...</span>
-    </div>
-    <!-- Seletor de câmeras (oculto se só 1) -->
-    <div class="camera-selector" id="cameraSelector" style="display:none"></div>
-    <!-- Botão reconectar manual -->
-    <button class="cam-retry" id="camRetry" style="display:none" onclick="reconectarCameraManual()">
-      ↻ Tentar novamente
-    </button>
-  </div>
+    <!-- COLUNA ESQUERDA: CÂMERA -->
+    <div class="thomson-col-camera">
 
-  <!-- BOBINA A — fiel ao _buildBobinaPanel -->
-  <div class="bobina-panel" id="panelA">
-    <div class="bobina-header">
-      <div class="bobina-label">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#42A5F5" stroke-width="2">
-          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-        </svg>
-        <span>BOBINA A</span>
+      <!-- CÂMERA -->
+      <div class="camera-box" id="cameraBox">
+        <img id="cameraFeed" alt="Feed câmera" style="display:none"/>
+        <div class="camera-placeholder" id="cameraPlaceholder">
+          <div class="cam-spinner"></div>
+          <span id="cameraStatus">Conectando à câmera...</span>
+        </div>
+        <div class="camera-selector" id="cameraSelector" style="display:none"></div>
+        <button class="cam-retry" id="camRetry" style="display:none" onclick="reconectarCameraManual()">
+          ↻ Tentar novamente
+        </button>
       </div>
-      <div class="bobina-toggle-group">
-        <span class="bobina-estado" id="estadoA">DESLIGADA</span>
-        <label class="toggle-switch">
-          <input type="checkbox" id="switchA" onchange="toggleBobinaA(this.checked)" disabled/>
-          <span class="toggle-track azul"></span>
-        </label>
-      </div>
-    </div>
-    <div class="bobina-divider"></div>
-    <div class="bobina-corrente-row">
-      <div>
-        <div class="corrente-label">CORRENTE</div>
-        <div class="corrente-valor" id="correnteADisplay">—</div>
-        <div class="corrente-sub"  id="correnteASub"></div>
-      </div>
-      <button class="btn-ler azul" id="btnLerA" onclick="lerCorrenteA()" disabled>
-        ↻ LER
-      </button>
-    </div>
-  </div>
 
-  <!-- BOBINA B — fiel ao _buildBobinaPanel -->
-  <div class="bobina-panel" id="panelB">
-    <div class="bobina-header">
-      <div class="bobina-label">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFC107" stroke-width="2">
-          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-        </svg>
-        <span>BOBINA B</span>
+      <!-- BADGE DE SINAL -->
+      <div class="sinal-badge" id="sinalBadge">
+        <div class="sinal-dot verde" id="sinalDot"></div>
+        <span id="sinalTexto">SINAL: 000</span>
       </div>
-      <div class="bobina-toggle-group">
-        <span class="bobina-estado" id="estadoB">DESLIGADA</span>
-        <label class="toggle-switch">
-          <input type="checkbox" id="switchB" onchange="toggleBobinaB(this.checked)" disabled/>
-          <span class="toggle-track ambar"></span>
-        </label>
-      </div>
-    </div>
-    <div class="bobina-divider"></div>
-    <div class="bobina-corrente-row">
-      <div>
-        <div class="corrente-label">CORRENTE</div>
-        <div class="corrente-valor" id="correnteBDisplay">—</div>
-        <div class="corrente-sub"  id="correnteBSub"></div>
-      </div>
-      <button class="btn-ler ambar" id="btnLerB" onclick="lerCorrenteB()" disabled>
-        ↻ LER
-      </button>
-    </div>
-  </div>
 
-  <!-- BADGE DE SINAL — fiel ao _buildStatusBadge -->
-  <div class="sinal-badge" id="sinalBadge">
-    <div class="sinal-dot verde" id="sinalDot"></div>
-    <span id="sinalTexto">SINAL: 000</span>
-  </div>
+    </div>
 
+    <!-- COLUNA DIREITA: CONTROLES -->
+    <div class="thomson-col-controles">
+
+      <!-- BOBINA A -->
+      <div class="bobina-panel" id="panelA">
+        <div class="bobina-header">
+          <div class="bobina-label">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#42A5F5" stroke-width="2">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+            <span>BOBINA A</span>
+          </div>
+          <div class="bobina-toggle-group">
+            <span class="bobina-estado" id="estadoA">DESLIGADA</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="switchA" onchange="toggleBobinaA(this.checked)" disabled/>
+              <span class="toggle-track azul"></span>
+            </label>
+          </div>
+        </div>
+        <div class="bobina-divider"></div>
+        <div class="bobina-corrente-row">
+          <div>
+            <div class="corrente-label">CORRENTE</div>
+            <div class="corrente-valor" id="correnteADisplay">—</div>
+            <div class="corrente-sub"  id="correnteASub"></div>
+          </div>
+          <button class="btn-ler azul" id="btnLerA" onclick="lerCorrenteA()" disabled>↻ LER</button>
+        </div>
+      </div>
+
+      <!-- BOBINA B -->
+      <div class="bobina-panel" id="panelB">
+        <div class="bobina-header">
+          <div class="bobina-label">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFC107" stroke-width="2">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+            <span>BOBINA B</span>
+          </div>
+          <div class="bobina-toggle-group">
+            <span class="bobina-estado" id="estadoB">DESLIGADA</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="switchB" onchange="toggleBobinaB(this.checked)" disabled/>
+              <span class="toggle-track ambar"></span>
+            </label>
+          </div>
+        </div>
+        <div class="bobina-divider"></div>
+        <div class="bobina-corrente-row">
+          <div>
+            <div class="corrente-label">CORRENTE</div>
+            <div class="corrente-valor" id="correnteBDisplay">—</div>
+            <div class="corrente-sub"  id="correnteBSub"></div>
+          </div>
+          <button class="btn-ler ambar" id="btnLerB" onclick="lerCorrenteB()" disabled>↻ LER</button>
+        </div>
+      </div>
+
+    </div><!-- /col-controles -->
+  </div><!-- /layout -->
 </div><!-- /thomson-body -->
 
 <!-- ═══════════════════════════════════════════════════════════════
