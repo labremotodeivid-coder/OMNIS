@@ -5,18 +5,10 @@
 const PROXY = 'https://omnis-proxy.labremotodeivid.workers.dev';
 const BASE  = 'https://aneldethomson-panel.unifei.edu.br';
 
-// Encoda apenas caracteres que quebram query string
-// Preserva: / : ; (necessários para as rotas do Flask)
+// encodeURIComponent encoda tudo incluindo / → %2F
+// O Worker faz decodeURIComponent e o Flask recebe a URL correta
 function proxyUrl(path) {
-  const target = BASE + path;
-  const encoded = target
-    .replace(/ /g, '%20')
-    .replace(/\?/g, '%3F')
-    .replace(/#/g, '%23')
-    .replace(/&/g, '%26')
-    .replace(/=/g, '%3D')
-    .replace(/\+/g, '%2B');
-  return `${PROXY}?target=${encoded}`;
+  return `${PROXY}?target=${encodeURIComponent(BASE + path)}`;
 }
 
 const READ_URL   = proxyUrl('/arduino/api/v1/read');
