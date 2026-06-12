@@ -169,16 +169,16 @@ body {
    CORPO PRINCIPAL — câmera ao lado dos controles
 ═══════════════════════════════════════════ */
 .thomson-body {
-  padding: 70px 16px 40px;
-  max-width: 1100px;
+  padding: 115px 20px 40px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
-/* Layout em duas colunas: câmera | controles */
+/* Layout em duas colunas: câmera (maior) | controles */
 .thomson-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  grid-template-columns: 3fr 2fr;
+  gap: 24px;
   align-items: start;
 }
 
@@ -186,6 +186,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  position: sticky;
+  top: 80px;
 }
 
 .thomson-col-controles {
@@ -199,7 +201,7 @@ body {
 ═══════════════════════════════════════════ */
 .camera-box {
   width: 100%;
-  height: 360px;
+  height: 420px;
   background: #000;
   border-radius: 15px;
   border: 2px solid var(--cor-card);
@@ -666,11 +668,15 @@ input:disabled + .toggle-track { opacity: 0.4; cursor: not-allowed; }
     grid-template-columns: 1fr;
   }
 
+  .thomson-col-camera {
+    position: static;
+  }
+
   .camera-box {
-    height: 240px;
+    height: 260px;
   }
 
   .thomson-body {
-    padding: 70px 12px 30px;
+    padding: 115px 12px 30px;
   }
 }
