@@ -5,17 +5,18 @@
 const PROXY = 'https://omnis-proxy.labremotodeivid.workers.dev';
 const BASE  = 'https://aneldethomson-panel.unifei.edu.br';
 
-// encodeURIComponent encoda tudo incluindo / → %2F
-// O Worker faz decodeURIComponent e o Flask recebe a URL correta
-function proxyUrl(path) {
-  return `${PROXY}?target=${encodeURIComponent(BASE + path)}`;
+// Envia a URL alvo no header X-Target-URL
+// Assim evita qualquer problema de encode/decode na query string
+function proxyFetch(path, opts = {}) {
+  return fetch(PROXY, {
+    ...opts,
+    headers: {
+      'Content-Type':  'application/json',
+      'X-Target-URL':  BASE + path,
+      ...(opts.headers || {}),
+    },
+  });
 }
-
-const READ_URL   = proxyUrl('/arduino/api/v1/read');
-const BEACON_URL = proxyUrl('/beacon');
-const ENTER_URL  = proxyUrl('/session/enter');
-const STATUS_URL = proxyUrl('/session/status');
-const RESET_URL  = proxyUrl('/arduino/api/v1/write/888;');
 
 const TUTORIAL_URL = 'https://raw.githubusercontent.com/labremotodeivid-coder/labremoto/main/experimentos_info/anel_de_thomson_info.md';
 const WS_URL       = 'wss://aneldethomson-cam.unifei.edu.br';
@@ -71,7 +72,7 @@ async function resetInicial() {
 
   // Etapa 1: beacon
   try {
-    const res = await fetchComTimeout(BEACON_URL, { method: 'POST' }, 5000);
+    const res = await fetchComTimeout('/beacon', { method: 'POST' }, 5000);
     if (!res.ok) throw new Error('beacon falhou');
   } catch (_) {
     servidorIndisponivel = true;
@@ -82,7 +83,7 @@ async function resetInicial() {
 
   // Etapa 2: session/enter
   try {
-    const res = await fetchComTimeout(ENTER_URL, { method: 'POST' }, 8000);
+    const res = await fetchComTimeout('/session/enter', { method: 'POST' }, 8000);
     if (res.status === 409) {
       const data     = await res.json();
       const restante = data.remaining || 0;
@@ -115,7 +116,7 @@ async function resetInicial() {
 function iniciarKeepAlive() {
   clearInterval(timerKeepAlive);
   timerKeepAlive = setInterval(async () => {
-    try { await fetchComTimeout(READ_URL, { method: 'POST' }, 3000); } catch (_) {}
+    try { await fetchComTimeout('/arduino/api/v1/read', { method: 'POST' }, 3000); } catch (_) {}
   }, 5000);
 }
 
@@ -177,7 +178,7 @@ function atualizarTimerOcupado(seg) {
 
 async function reverificarEEntrar() {
   try {
-    const res = await fetchComTimeout(STATUS_URL, { method: 'POST' }, 6000);
+    const res = await fetchComTimeout('/session/status', { method: 'POST' }, 6000);
     if (res.ok) {
       const data     = await res.json();
       const ocupado  = data.busy      || false;
@@ -239,7 +240,7 @@ function atualizarPreparando(n) {
 // =====================================================================
 async function executarResetHardware() {
   if (resetCancelado) return;
-  try { await fetchComTimeout(RESET_URL, { method: 'POST' }, 10000); } catch (_) {}
+  try { await fetchComTimeout('/arduino/api/v1/write/888;', { method: 'POST' }, 10000); } catch (_) {}
 }
 
 // =====================================================================
@@ -295,9 +296,9 @@ async function lerCorrenteA() {
   document.getElementById('btnLerA').disabled = true;
   document.getElementById('correnteADisplay').textContent = '...';
   try {
-    await fetchComTimeout(proxyUrl('/arduino/api/v1/write/006;'), { method: 'POST' }, 5000);
+    await fetchComTimeout('/arduino/api/v1/write/006;', { method: 'POST' }, 5000);
     await delay(1200);
-    const res  = await fetchComTimeout(READ_URL, { method: 'POST' }, 5000);
+    const res  = await fetchComTimeout('/arduino/api/v1/read', { method: 'POST' }, 5000);
     const body = await res.text();
     correnteA  = parseCorrente(body);
     exibirCorrente('A', correnteA);
@@ -313,9 +314,9 @@ async function lerCorrenteB() {
   document.getElementById('btnLerB').disabled = true;
   document.getElementById('correnteBDisplay').textContent = '...';
   try {
-    await fetchComTimeout(proxyUrl('/arduino/api/v1/write/005;'), { method: 'POST' }, 5000);
+    await fetchComTimeout('/arduino/api/v1/write/005;', { method: 'POST' }, 5000);
     await delay(1200);
-    const res  = await fetchComTimeout(READ_URL, { method: 'POST' }, 5000);
+    const res  = await fetchComTimeout('/arduino/api/v1/read', { method: 'POST' }, 5000);
     const body = await res.text();
     correnteB  = parseCorrente(body);
     exibirCorrente('B', correnteB);
@@ -370,9 +371,9 @@ async function postCmd(cmd) {
   statusAtual = cmd;
   atualizarSinal();
   try {
-    const url = proxyUrl(`/arduino/api/v1/write/${cmd};`);
-    console.log('Enviando comando:', url); // debug
-    const res = await fetchComTimeout(url, { method: 'POST' }, 10000);
+    const path = `/arduino/api/v1/write/${cmd};`;
+    console.log('Enviando comando:', BASE + path);
+    const res = await fetchComTimeout(path, { method: 'POST' }, 10000);
     console.log('Resposta:', res.status);
   } catch (e) {
     console.error('Erro comando:', e);
@@ -500,7 +501,9 @@ function sair() {
   clearInterval(timerPreparando);
   resetCancelado = true;
   desconectarCamera();
-  setTimeout(() => { fetch(RESET_URL, { method: 'POST' }).catch(() => {}); }, 600);
+  setTimeout(() => { 
+    proxyFetch('/arduino/api/v1/write/888;', { method: 'POST' }).catch(() => {}); 
+  }, 600);
   document.body.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
   document.body.style.opacity    = '0';
   document.body.style.transform  = 'translateY(-20px)';
@@ -562,10 +565,11 @@ function atualizarUI() {
 // =====================================================================
 function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-async function fetchComTimeout(url, opts = {}, ms = 8000) {
+// Todas as chamadas ao servidor passam pelo proxyFetch com timeout
+async function fetchComTimeout(path, opts = {}, ms = 8000) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), ms);
   try {
-    return await fetch(url, { ...opts, signal: controller.signal });
+    return await proxyFetch(path, { ...opts, signal: controller.signal });
   } finally { clearTimeout(id); }
 }
