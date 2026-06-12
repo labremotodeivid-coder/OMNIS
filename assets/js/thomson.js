@@ -3,9 +3,15 @@
 // Fiel ao anel_de_thomson_screen.dart
 // =====================================================================
 
-const BASE         = 'https://aneldethomson-panel.unifei.edu.br';
-const READ_URL     = `${BASE}/arduino/api/v1/read`;
-const WRITE_URL    = `${BASE}/arduino/api/v1/write`;
+const PROXY      = 'https://omnis-proxy.labremotodeivid.workers.dev';
+const BASE       = 'https://aneldethomson-panel.unifei.edu.br';
+const READ_URL   = `${PROXY}?target=${encodeURIComponent(BASE + '/arduino/api/v1/read')}`;
+const WRITE_BASE = `${PROXY}?target=${encodeURIComponent(BASE + '/arduino/api/v1/write/')}`;
+const BEACON_URL = `${PROXY}?target=${encodeURIComponent(BASE + '/beacon')}`;
+const ENTER_URL  = `${PROXY}?target=${encodeURIComponent(BASE + '/session/enter')}`;
+const STATUS_URL = `${PROXY}?target=${encodeURIComponent(BASE + '/session/status')}`;
+const RESET_URL  = `${PROXY}?target=${encodeURIComponent(BASE + '/arduino/api/v1/write/888;')}`;
+
 const TUTORIAL_URL = 'https://raw.githubusercontent.com/labremotodeivid-coder/labremoto/main/experimentos_info/anel_de_thomson_info.md';
 const WS_URL       = 'wss://aneldethomson-cam.unifei.edu.br';
 
@@ -34,12 +40,12 @@ let lendoB        = false;
 let statusAtual   = '000';
 
 // ── Câmera WebSocket ─────────────────────────────────────────────────
-let wsCamera       = null;
-let camReconexoes  = 0;
-let camTimer       = null;
-let camAtual       = 0;
-let totalCameras   = 1;
-const MAX_CAM_REC  = 5;
+let wsCamera      = null;
+let camReconexoes = 0;
+let camTimer      = null;
+let camAtual      = 0;
+let totalCameras  = 1;
+const MAX_CAM_REC = 5;
 
 // =====================================================================
 // INIT
@@ -60,7 +66,7 @@ async function resetInicial() {
 
   // Etapa 1: beacon
   try {
-    const res = await fetchComTimeout(`${BASE}/beacon`, { method: 'POST' }, 5000);
+    const res = await fetchComTimeout(BEACON_URL, { method: 'POST' }, 5000);
     if (!res.ok) throw new Error('beacon falhou');
   } catch (_) {
     servidorIndisponivel = true;
@@ -71,8 +77,7 @@ async function resetInicial() {
 
   // Etapa 2: session/enter
   try {
-    const res = await fetchComTimeout(`${BASE}/session/enter`, { method: 'POST' }, 8000);
-
+    const res = await fetchComTimeout(ENTER_URL, { method: 'POST' }, 8000);
     if (res.status === 409) {
       const data     = await res.json();
       const restante = data.remaining || 0;
@@ -110,12 +115,12 @@ function iniciarKeepAlive() {
 }
 
 // =====================================================================
-// TIMER DE SESSÃO — 10 minutos (600s) — fiel ao _iniciarTimerSessao
+// TIMER DE SESSÃO — 10 minutos
 // =====================================================================
 function iniciarTimerSessao() {
   clearInterval(timerSessao);
-  sessaoSegundos  = 600;
-  sessaoExpiraEm  = Date.now() + 600000;
+  sessaoSegundos = 600;
+  sessaoExpiraEm = Date.now() + 600000;
 
   timerSessao = setInterval(() => {
     const restante = Math.max(0, Math.floor((sessaoExpiraEm - Date.now()) / 1000));
@@ -129,17 +134,14 @@ function iniciarTimerSessao() {
 }
 
 function atualizarTimer() {
-  const box = document.getElementById('timerBox');
+  const box  = document.getElementById('timerBox');
   const disp = document.getElementById('timerDisplay');
   if (!box || !disp) return;
   if (!experimentoPronto) { box.style.display = 'none'; return; }
-
   box.style.display = 'flex';
   const m = String(Math.floor(sessaoSegundos / 60)).padStart(2, '0');
   const s = String(sessaoSegundos % 60).padStart(2, '0');
   disp.textContent = `${m}:${s}`;
-
-  // Cor — fiel ao _corTimer do Dart
   box.className = 'thomson-timer';
   if (sessaoSegundos <= 60)       box.classList.add('vermelho');
   else if (sessaoSegundos <= 120) box.classList.add('laranja');
@@ -152,37 +154,34 @@ function expirarSessao() {
 }
 
 // =====================================================================
-// TIMER DE OCUPADO — fiel ao _iniciarTimerOcupado + _timerOcupado Dart
+// TIMER DE OCUPADO
 // =====================================================================
 function iniciarTimerOcupado() {
   clearInterval(timerOcupado);
   timerOcupado = setInterval(() => {
     const seg = Math.max(0, Math.floor((ocupadoExpiraEm - Date.now()) / 1000));
     atualizarTimerOcupado(seg);
-    if (seg <= 0) {
-      clearInterval(timerOcupado);
-      reverificarEEntrar();
-    }
+    if (seg <= 0) { clearInterval(timerOcupado); reverificarEEntrar(); }
   }, 500);
 }
 
 function atualizarTimerOcupado(seg) {
-  const m = String(Math.floor(seg / 60)).padStart(2, '0');
-  const s = String(seg % 60).padStart(2, '0');
+  const m  = String(Math.floor(seg / 60)).padStart(2, '0');
+  const s  = String(seg % 60).padStart(2, '0');
   const el = document.getElementById('timerOcupado');
   if (!el) return;
   el.textContent = `${m}:${s}`;
-  el.className = 'timer-card-valor';
+  el.className   = 'timer-card-valor';
   if (seg <= 30)      el.classList.add('vermelho');
   else if (seg <= 60) el.classList.add('laranja');
 }
 
 async function reverificarEEntrar() {
   try {
-    const res = await fetchComTimeout(`${BASE}/session/status`, { method: 'POST' }, 6000);
+    const res = await fetchComTimeout(STATUS_URL, { method: 'POST' }, 6000);
     if (res.ok) {
-      const data    = await res.json();
-      const ocupado = data.busy      || false;
+      const data     = await res.json();
+      const ocupado  = data.busy      || false;
       const restante = data.remaining || 0;
       if (ocupado && restante > 0) {
         ocupadoExpiraEm = Date.now() + restante * 1000;
@@ -201,7 +200,7 @@ async function reverificarEEntrar() {
 }
 
 // =====================================================================
-// PREPARAÇÃO INICIAL — fiel ao _timerPreparando + _buildBannerPreparando
+// PREPARAÇÃO INICIAL
 // =====================================================================
 function iniciarPreparacao() {
   mostrarOverlay('overlayPreparando');
@@ -227,14 +226,10 @@ function atualizarPreparando(n) {
   const ringFg = document.getElementById('ringFg');
   const contEl = document.getElementById('preparandoContador');
   if (numEl) numEl.textContent = n;
-
-  // Anel circular de progresso
   const perim  = 138.2;
   const offset = perim - (n / 10) * perim;
-  if (ringFg) ringFg.style.strokeDashoffset = offset;
-
-  // Cor muda — fiel ao corTimer do Dart
   if (ringFg) {
+    ringFg.style.strokeDashoffset = offset;
     ringFg.style.stroke = n > 5 ? 'rgba(255,255,255,0.7)' : n > 3 ? 'orange' : '#f87171';
   }
   if (contEl) {
@@ -243,12 +238,12 @@ function atualizarPreparando(n) {
 }
 
 // =====================================================================
-// RESET DE HARDWARE — POST write/888;
+// RESET DE HARDWARE
 // =====================================================================
 async function executarResetHardware() {
   if (resetCancelado) return;
   try {
-    await fetchComTimeout(`${WRITE_URL}/888;`, { method: 'POST' }, 10000);
+    await fetchComTimeout(RESET_URL, { method: 'POST' }, 10000);
   } catch (_) {}
 }
 
@@ -266,7 +261,7 @@ function desbloquearControles() {
 }
 
 // =====================================================================
-// COMANDOS DAS BOBINAS — fiel ao _toggleBobinaA/_toggleBobinaB
+// COMANDOS DAS BOBINAS
 // =====================================================================
 async function toggleBobinaA(ligar) {
   await postCmd(ligar ? '001' : '002');
@@ -295,8 +290,7 @@ function atualizarEstadoBobina(bob, ligada) {
 }
 
 // =====================================================================
-// LEITURA DE CORRENTE — fiel ao _lerCorrenteA/_lerCorrenteB
-// Delay de 1200ms para medição AC (RMS precisa de vários ciclos 60Hz)
+// LEITURA DE CORRENTE
 // =====================================================================
 async function lerCorrenteA() {
   if (lendoA) return;
@@ -304,7 +298,8 @@ async function lerCorrenteA() {
   document.getElementById('btnLerA').disabled = true;
   document.getElementById('correnteADisplay').textContent = '...';
   try {
-    await fetchComTimeout(`${WRITE_URL}/006;`, { method: 'POST' }, 5000);
+    const writeUrl = `${PROXY}?target=${encodeURIComponent(BASE + '/arduino/api/v1/write/006;')}`;
+    await fetchComTimeout(writeUrl, { method: 'POST' }, 5000);
     await delay(1200);
     const res  = await fetchComTimeout(READ_URL, { method: 'POST' }, 5000);
     const body = await res.text();
@@ -321,7 +316,8 @@ async function lerCorrenteB() {
   document.getElementById('btnLerB').disabled = true;
   document.getElementById('correnteBDisplay').textContent = '...';
   try {
-    await fetchComTimeout(`${WRITE_URL}/005;`, { method: 'POST' }, 5000);
+    const writeUrl = `${PROXY}?target=${encodeURIComponent(BASE + '/arduino/api/v1/write/005;')}`;
+    await fetchComTimeout(writeUrl, { method: 'POST' }, 5000);
     await delay(1200);
     const res  = await fetchComTimeout(READ_URL, { method: 'POST' }, 5000);
     const body = await res.text();
@@ -333,23 +329,20 @@ async function lerCorrenteB() {
 }
 
 // =====================================================================
-// EXIBIR CORRENTE — fiel ao _buildCorrenteDisplay
-// Limiar de ruído: 50mA → exibe 0,00 A
+// EXIBIR CORRENTE
 // =====================================================================
 function exibirCorrente(bob, val) {
   const dispEl = document.getElementById(`corrente${bob}Display`);
   const subEl  = document.getElementById(`corrente${bob}Sub`);
   const cor    = bob === 'A' ? 'azul' : 'ambar';
   if (!dispEl) return;
-
   if (val === null) {
     dispEl.textContent = '—';
     dispEl.className   = 'corrente-valor';
     if (subEl) subEl.textContent = '';
     return;
   }
-
-  const LIMIAR = 50; // mA — ruído ACS712
+  const LIMIAR  = 50;
   const ehRuido = val < LIMIAR;
   const valorA  = ehRuido ? '0,00' : (val / 1000).toFixed(2).replace('.', ',');
   dispEl.textContent = `${valorA} A`;
@@ -360,10 +353,6 @@ function exibirCorrente(bob, val) {
   }
 }
 
-// =====================================================================
-// PARSE DE CORRENTE — fiel ao _parseCorrente Dart
-// Formato: "005;138;201:2550;" → extrai valor após ":"
-// =====================================================================
 function parseCorrente(body) {
   if (!body) return null;
   for (const seg of body.split(';').map(s => s.trim())) {
@@ -385,7 +374,8 @@ async function postCmd(cmd) {
   statusAtual = cmd;
   atualizarSinal();
   try {
-    await fetchComTimeout(`${WRITE_URL}/${cmd};`, { method: 'POST' }, 10000);
+    const url = `${PROXY}?target=${encodeURIComponent(BASE + `/arduino/api/v1/write/${cmd};`)}`;
+    await fetchComTimeout(url, { method: 'POST' }, 10000);
   } catch (_) {
     statusAtual = 'ERRO';
     atualizarSinal(true);
@@ -393,14 +383,14 @@ async function postCmd(cmd) {
 }
 
 function atualizarSinal(erro = false) {
-  const dot  = document.getElementById('sinalDot');
-  const txt  = document.getElementById('sinalTexto');
-  if (dot) { dot.className = `sinal-dot ${erro ? 'vermelho' : 'verde'}`; }
+  const dot = document.getElementById('sinalDot');
+  const txt = document.getElementById('sinalTexto');
+  if (dot) dot.className = `sinal-dot ${erro ? 'vermelho' : 'verde'}`;
   if (txt) txt.textContent = `SINAL: ${statusAtual}`;
 }
 
 // =====================================================================
-// CÂMERA WEBSOCKET — fiel ao ExperimentoCameraWidget
+// CÂMERA WEBSOCKET
 // =====================================================================
 function conectarCamera() {
   desconectarCamera();
@@ -416,46 +406,37 @@ function tentarConectarCamera() {
   try {
     wsCamera = new WebSocket(WS_URL);
     wsCamera.binaryType = 'arraybuffer';
-
     wsCamera.onopen = () => {
       camReconexoes = 0;
       wsCamera.send('get n');
-      setCameraStatus('Câmera conectada', false, true);
+      setCameraStatus('', false, true);
     };
-
     wsCamera.onmessage = (ev) => {
       camReconexoes = 0;
       if (typeof ev.data === 'string') {
         if (ev.data.toLowerCase().startsWith('cameras available:')) {
           const n = parseInt(ev.data.split(':')[1].trim()) || 1;
-          totalCameras = n;
-          camAtual     = 0;
+          totalCameras = n; camAtual = 0;
           atualizarSeletorCamera();
           selecionarCamera(0);
         } else if (ev.data.startsWith('data:image/')) {
           mostrarFrameCamera(ev.data);
         }
       } else {
-        // Bytes crus → base64
         const bytes  = new Uint8Array(ev.data);
         let binary   = '';
         bytes.forEach(b => binary += String.fromCharCode(b));
         mostrarFrameCamera('data:image/jpeg;base64,' + btoa(binary));
       }
     };
-
     wsCamera.onerror = () => agendarReconexaoCamera();
     wsCamera.onclose = () => agendarReconexaoCamera();
-
   } catch (_) { agendarReconexaoCamera(); }
 }
 
 function agendarReconexaoCamera() {
   camReconexoes++;
-  if (camReconexoes >= MAX_CAM_REC) {
-    setCameraStatus('Câmera indisponível no momento.', true);
-    return;
-  }
+  if (camReconexoes >= MAX_CAM_REC) { setCameraStatus('Câmera indisponível no momento.', true); return; }
   setCameraStatus(`Reconectando... (tentativa ${camReconexoes})`);
   clearTimeout(camTimer);
   camTimer = setTimeout(tentarConectarCamera, camReconexoes * 2000);
@@ -468,12 +449,8 @@ function desconectarCamera() {
 
 function selecionarCamera(idx) {
   camAtual = idx;
-  if (wsCamera && wsCamera.readyState === WebSocket.OPEN) {
-    wsCamera.send(`camera ${idx}`);
-  }
-  document.querySelectorAll('.cam-btn').forEach((b, i) => {
-    b.classList.toggle('ativo', i === idx);
-  });
+  if (wsCamera && wsCamera.readyState === WebSocket.OPEN) wsCamera.send(`camera ${idx}`);
+  document.querySelectorAll('.cam-btn').forEach((b, i) => b.classList.toggle('ativo', i === idx));
 }
 
 function atualizarSeletorCamera() {
@@ -503,7 +480,7 @@ function setCameraStatus(msg, mostrarBotao = false, ocultar = false) {
   ph.innerHTML = mostrarBotao
     ? `<span style="margin-bottom:8px">${msg}</span>`
     : `<div class="cam-spinner"></div><span>${msg}</span>`;
-  if (img) img.style.display = 'none';
+  if (img)   img.style.display   = 'none';
   if (retry) retry.style.display = mostrarBotao ? 'block' : 'none';
 }
 
@@ -515,23 +492,18 @@ function reconectarCameraManual() {
 }
 
 // =====================================================================
-// SAÍDA — fiel ao _sair() e _sairSemSessao()
+// SAÍDA
 // =====================================================================
 function sair() {
-  // Cancela todos os timers — watchdog libera sessão em 10s
   clearInterval(timerKeepAlive);
   clearInterval(timerSessao);
   clearInterval(timerOcupado);
   clearInterval(timerPreparando);
   resetCancelado = true;
   desconectarCamera();
-
-  // Reset de hardware em background (igual ao _thomsonResetBackground)
   setTimeout(() => {
-    fetch(`${WRITE_URL}/888;`, { method: 'POST' }).catch(() => {});
+    fetch(RESET_URL, { method: 'POST' }).catch(() => {});
   }, 600);
-
-  // Animação de saída e volta para experimentos
   document.body.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
   document.body.style.opacity    = '0';
   document.body.style.transform  = 'translateY(-20px)';
@@ -554,7 +526,7 @@ function tentarNovamente() {
 }
 
 // =====================================================================
-// TUTORIAL — fiel ao _fetchTutorial
+// TUTORIAL
 // =====================================================================
 async function fetchTutorial() {
   const body = document.getElementById('tutorialBody');
@@ -583,16 +555,8 @@ function toggleDrawer() {
 // =====================================================================
 // OVERLAYS
 // =====================================================================
-function mostrarOverlay(id) {
-  const el = document.getElementById(id);
-  if (el) el.style.display = 'flex';
-}
-
-function esconderOverlay(id) {
-  const el = document.getElementById(id);
-  if (el) el.style.display = 'none';
-}
-
+function mostrarOverlay(id)  { const el = document.getElementById(id); if (el) el.style.display = 'flex'; }
+function esconderOverlay(id) { const el = document.getElementById(id); if (el) el.style.display = 'none'; }
 function atualizarUI() {
   if (servidorIndisponivel) { mostrarOverlay('overlayIndisponivel'); return; }
   if (experimentoOcupado)   { mostrarOverlay('overlayOcupado');     return; }
@@ -605,7 +569,7 @@ function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 async function fetchComTimeout(url, opts = {}, ms = 8000) {
   const controller = new AbortController();
-  const id         = setTimeout(() => controller.abort(), ms);
+  const id = setTimeout(() => controller.abort(), ms);
   try {
     return await fetch(url, { ...opts, signal: controller.signal });
   } finally {

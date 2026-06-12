@@ -3,144 +3,110 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>OMNIS - Teoria</title>
-  <link rel="stylesheet" href="../assets/css/style.css" />
-  <link rel="stylesheet" href="../assets/css/teoria.css" />
+  <title>OMNIS - Integrated Educational Platform</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
 
   <!-- NAVBAR -->
   <nav class="navbar">
     <div class="nav-logo">
-      <a href="../index.html"><img src="../assets/images/logo.png" alt="OMNIS Logo" class="logo-img" /></a>
+      <a href="index.html"><img src="assets/images/logo.png" alt="OMNIS Logo" class="logo-img" /></a>
     </div>
     <ul class="nav-links">
-      <li><a href="jogos.html">Jogos</a></li>
-      <li><a href="experimentos.html">Experimentos</a></li>
-      <li><a href="teoria.html" class="ativo">Teoria</a></li>
-      <li><a href="comunidade.html">Comunidade</a></li>
+      <li><a href="pages/jogos.html">Jogos</a></li>
+      <li><a href="pages/experimentos.html">Experimentos</a></li>
+      <li><a href="pages/teoria.html">Teoria</a></li>
+      <li><a href="pages/comunidade.html">Comunidade</a></li>
     </ul>
     <div class="nav-buttons">
       <a href="#" class="btn-login">Entrar</a>
       <a href="#" class="btn-cadastro">Cadastrar</a>
     </div>
+    <!-- Hamburguer mobile -->
+    <div class="nav-hamburger" onclick="toggleMenu()" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
   </nav>
 
-  <!-- HEADER DA PÁGINA -->
-  <section class="teoria-header">
-    <h1>📚 Teoria</h1>
-    <p>Escolha uma matéria e explore os conteúdos</p>
+  <!-- Menu mobile -->
+  <div class="nav-mobile-menu" id="mobileMenu">
+    <a href="pages/jogos.html">🎮 Jogos</a>
+    <a href="pages/experimentos.html">🔬 Experimentos</a>
+    <a href="pages/teoria.html">📚 Teoria</a>
+    <a href="pages/comunidade.html">🌐 Comunidade</a>
+    <div class="mobile-btns">
+      <a href="#" class="btn-login">Entrar</a>
+      <a href="#" class="btn-cadastro">Cadastrar</a>
+    </div>
+  </div>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-text">
+      <h1>Bem-vindo à <span class="destaque">OMNIS</span></h1>
+      <p class="subtitulo">A plataforma educacional que reúne <strong>tudo</strong> em um só lugar. Videoaulas, experimentos remotos, jogos educativos e uma comunidade incrível esperando por você.</p>
+      <div class="hero-btns">
+        <a href="#" class="btn-primary">Começar agora</a>
+        <a href="#sobre" class="btn-secondary">Saiba mais</a>
+      </div>
+    </div>
+    <div class="hero-mascote">
+      <img src="assets/images/mascote.png" alt="OMNI - Mascote da OMNIS" />
+    </div>
   </section>
 
-  <!-- ABAS DAS MATÉRIAS -->
-  <section class="teoria-container">
-    <div class="materias-tabs">
-      <button class="tab-btn ativo" onclick="mostrarMateria('fisica')">⚛️ Física</button>
-      <button class="tab-btn" onclick="mostrarMateria('matematica')">📐 Matemática</button>
-      <button class="tab-btn" onclick="mostrarMateria('quimica')">🧪 Química</button>
-      <button class="tab-btn" onclick="mostrarMateria('biologia')">🧬 Biologia</button>
-      <button class="tab-btn" onclick="mostrarMateria('programacao')">💻 Programação</button>
-    </div>
+  <!-- SOBRE -->
+  <section class="sobre" id="sobre">
+    <h2>O que é a <span class="destaque">OMNIS</span>?</h2>
+    <p>OMNIS é uma plataforma educacional integrada que conecta alunos ao conhecimento de forma dinâmica e inovadora. Aqui você aprende com vídeos, experimenta na prática, evolui com jogos e compartilha com a comunidade.</p>
 
-    <!-- FÍSICA -->
-    <div class="materia-content ativo" id="fisica">
-      <div class="cards-teoria">
-        <div class="card-teoria"><div class="card-teoria-icon">🌊</div><h3>Mecânica</h3><p>Estude movimento, força e energia com exemplos do dia a dia.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">⚡</div><h3>Eletromagnetismo</h3><p>Entenda campos elétricos, magnéticos e suas interações.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🌡️</div><h3>Termodinâmica</h3><p>Explore calor, temperatura e as leis da termodinâmica.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🔭</div><h3>Óptica</h3><p>Descubra como a luz se comporta, refração e reflexão.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🎵</div><h3>Ondulatória</h3><p>Aprenda sobre ondas, som e fenômenos ondulatórios.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">⚛️</div><h3>Física Moderna</h3><p>Relatividade, física quântica e o universo subatômico.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🪐</div><h3>Gravitação</h3><p>Lei da gravitação universal e mecânica celeste.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">💧</div><h3>Hidrostática</h3><p>Pressão, empuxo e comportamento dos fluidos.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🔋</div><h3>Circuitos Elétricos</h3><p>Resistência, corrente, tensão e circuitos em série e paralelo.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">☢️</div><h3>Física Nuclear</h3><p>Radioatividade, fissão, fusão e energia nuclear.</p><a href="#" class="btn-card">Acessar</a></div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">🎮</div>
+        <h3>Jogos</h3>
+        <p>Aprenda jogando com jogos educativos incríveis e desafios interativos.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔬</div>
+        <h3>Experimentos</h3>
+        <p>Realize experimentos remotos e descubra a ciência na prática.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📚</div>
+        <h3>Teoria</h3>
+        <p>Videoaulas completas com os melhores conteúdos educacionais.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌐</div>
+        <h3>Comunidade</h3>
+        <p>Conecte-se com outros alunos, tire dúvidas e compartilhe conhecimento.</p>
       </div>
     </div>
-
-    <!-- MATEMÁTICA -->
-    <div class="materia-content" id="matematica">
-      <div class="cards-teoria">
-        <div class="card-teoria"><div class="card-teoria-icon">➕</div><h3>Álgebra</h3><p>Equações, inequações e expressões algébricas.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">📈</div><h3>Funções</h3><p>Funções lineares, quadráticas, exponenciais e logarítmicas.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">📐</div><h3>Geometria Plana</h3><p>Áreas, perímetros e propriedades das figuras planas.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">📦</div><h3>Geometria Espacial</h3><p>Volumes e superfícies de sólidos geométricos.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🔢</div><h3>Trigonometria</h3><p>Seno, cosseno, tangente e identidades trigonométricas.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">∞</div><h3>Cálculo</h3><p>Limites, derivadas e integrais de funções reais.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🎲</div><h3>Probabilidade</h3><p>Eventos, espaço amostral e cálculo de probabilidades.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">📊</div><h3>Estatística</h3><p>Média, mediana, moda e análise de dados.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🔣</div><h3>Matrizes e Determinantes</h3><p>Operações com matrizes e cálculo de determinantes.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🔵</div><h3>Geometria Analítica</h3><p>Pontos, retas e cônicas no plano cartesiano.</p><a href="#" class="btn-card">Acessar</a></div>
-      </div>
-    </div>
-
-    <!-- QUÍMICA -->
-    <div class="materia-content" id="quimica">
-      <div class="cards-teoria">
-        <div class="card-teoria"><div class="card-teoria-icon">⚗️</div><h3>Química Geral</h3><p>Matéria, energia, átomos e tabela periódica.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🔗</div><h3>Ligações Químicas</h3><p>Ligações iônicas, covalentes e metálicas.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">⚖️</div><h3>Estequiometria</h3><p>Cálculos químicos e balanceamento de equações.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">💧</div><h3>Soluções</h3><p>Concentração, solubilidade e propriedades das soluções.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">⚡</div><h3>Eletroquímica</h3><p>Pilhas, eletrólise e reações de oxirredução.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🌡️</div><h3>Termoquímica</h3><p>Entalpia, calor de reação e calorimetria.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🧴</div><h3>Química Orgânica</h3><p>Carbono, hidrocarbonetos e funções orgânicas.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🫧</div><h3>Ácidos e Bases</h3><p>pH, neutralização e teoria de Arrhenius e Brønsted.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🔄</div><h3>Equilíbrio Químico</h3><p>Constante de equilíbrio e princípio de Le Chatelier.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">💊</div><h3>Bioquímica</h3><p>Proteínas, carboidratos, lipídios e ácidos nucleicos.</p><a href="#" class="btn-card">Acessar</a></div>
-      </div>
-    </div>
-
-    <!-- BIOLOGIA -->
-    <div class="materia-content" id="biologia">
-      <div class="cards-teoria">
-        <div class="card-teoria"><div class="card-teoria-icon">🦠</div><h3>Citologia</h3><p>Estrutura e funcionamento das células.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🧬</div><h3>Genética</h3><p>Hereditariedade, DNA, RNA e leis de Mendel.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🌱</div><h3>Botânica</h3><p>Estrutura, fisiologia e classificação das plantas.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🐾</div><h3>Zoologia</h3><p>Classificação e características dos animais.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🌍</div><h3>Ecologia</h3><p>Ecossistemas, cadeias alimentares e meio ambiente.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🔬</div><h3>Histologia</h3><p>Tecidos animais e suas funções no organismo.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🫀</div><h3>Fisiologia Humana</h3><p>Sistemas do corpo humano e seu funcionamento.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🦋</div><h3>Evolução</h3><p>Teorias evolutivas, seleção natural e especiação.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🍄</div><h3>Microbiologia</h3><p>Vírus, bactérias, fungos e protistas.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">⚗️</div><h3>Bioquímica Celular</h3><p>Fotossíntese, respiração celular e metabolismo.</p><a href="#" class="btn-card">Acessar</a></div>
-      </div>
-    </div>
-
-    <!-- PROGRAMAÇÃO -->
-    <div class="materia-content" id="programacao">
-      <div class="cards-teoria">
-        <div class="card-teoria"><div class="card-teoria-icon">🌐</div><h3>HTML</h3><p>Estrutura de páginas web com tags e semântica.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🎨</div><h3>CSS</h3><p>Estilização, layouts e design responsivo.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">⚙️</div><h3>JavaScript</h3><p>Lógica de programação, DOM e interatividade.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🐍</div><h3>Python</h3><p>Linguagem versátil para web, dados e automação.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">☕</div><h3>Java</h3><p>Programação orientada a objetos e aplicações robustas.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">⚛️</div><h3>React</h3><p>Biblioteca JavaScript para interfaces modernas.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🗄️</div><h3>Banco de Dados</h3><p>SQL, modelagem e consultas em banco de dados.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🔀</div><h3>Algoritmos</h3><p>Lógica, estruturas de dados e resolução de problemas.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🐙</div><h3>Git e GitHub</h3><p>Controle de versão e colaboração em projetos.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🤖</div><h3>Inteligência Artificial</h3><p>Machine learning, redes neurais e IA aplicada.</p><a href="#" class="btn-card">Acessar</a></div>
-      </div>
-    </div>
-
   </section>
 
   <!-- FOOTER -->
   <footer class="footer">
-    <img src="../assets/images/logo.png" alt="OMNIS" class="footer-logo" />
+    <img src="assets/images/logo.png" alt="OMNIS" class="footer-logo" />
     <p>© 2025 OMNIS - Integrated Educational Platform. Todos os direitos reservados.</p>
   </footer>
 
-  <script src="../assets/js/script.js"></script>
+  <script src="assets/js/script.js"></script>
   <script>
-    function mostrarMateria(id) {
-      document.querySelectorAll('.materia-content').forEach(m => m.classList.remove('ativo'));
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('ativo'));
-      document.getElementById(id).classList.add('ativo');
-      event.target.classList.add('ativo');
+    // Menu hamburguer mobile
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('aberto');
     }
 
+    // Fecha menu ao clicar em link
+    document.querySelectorAll('.nav-mobile-menu a').forEach(link => {
+      link.addEventListener('click', () => {
+        document.getElementById('mobileMenu').classList.remove('aberto');
+      });
+    });
+
     // Animação de saída ao navegar
-    document.querySelectorAll('.nav-logo a, .nav-links a').forEach(link => {
+    document.querySelectorAll('.nav-links a, .nav-mobile-menu a').forEach(link => {
       link.addEventListener('click', function(e) {
         const href = this.getAttribute('href');
         if (href && href !== '#') {
@@ -148,9 +114,7 @@
           document.body.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
           document.body.style.opacity = '0';
           document.body.style.transform = 'translateY(-20px)';
-          setTimeout(() => {
-            window.location.href = href;
-          }, 400);
+          setTimeout(() => { window.location.href = href; }, 400);
         }
       });
     });
