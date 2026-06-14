@@ -23,7 +23,23 @@
       <a href="#" class="btn-login">Entrar</a>
       <a href="#" class="btn-cadastro">Cadastrar</a>
     </div>
+    <!-- Hamburguer mobile -->
+    <div class="nav-hamburger" onclick="toggleMenu()" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
   </nav>
+
+  <!-- Menu mobile -->
+  <div class="nav-mobile-menu" id="mobileMenu">
+    <a href="pages/jogos.html">🎮 Jogos</a>
+    <a href="pages/experimentos.html">🔬 Experimentos</a>
+    <a href="pages/teoria.html">📚 Teoria</a>
+    <a href="pages/comunidade.html">🌐 Comunidade</a>
+    <div class="mobile-btns">
+      <a href="#" class="btn-login">Entrar</a>
+      <a href="#" class="btn-cadastro">Cadastrar</a>
+    </div>
+  </div>
 
   <!-- HERO SECTION -->
   <section class="hero">
@@ -44,7 +60,6 @@
   <section class="sobre" id="sobre">
     <h2>O que é a <span class="destaque">OMNIS</span>?</h2>
     <p>OMNIS é uma plataforma educacional integrada que conecta alunos ao conhecimento de forma dinâmica e inovadora. Aqui você aprende com vídeos, experimenta na prática, evolui com jogos e compartilha com a comunidade.</p>
-
     <div class="cards">
       <div class="card">
         <div class="card-icon">🎮</div>
@@ -77,7 +92,26 @@
 
   <script src="assets/js/script.js"></script>
   <script>
-    // Animação de saída ao navegar para outra página
+    // Menu hamburguer mobile
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('aberto');
+    }
+
+    // Fecha menu ao clicar em link
+    document.querySelectorAll('.nav-mobile-menu a').forEach(link => {
+      link.addEventListener('click', function() {
+        const href = this.getAttribute('href');
+        document.getElementById('mobileMenu').classList.remove('aberto');
+        if (href && href !== '#') {
+          document.body.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+          document.body.style.opacity = '0';
+          document.body.style.transform = 'translateY(-20px)';
+          setTimeout(() => { window.location.href = href; }, 400);
+        }
+      });
+    });
+
+    // Animação de saída ao navegar pelo menu desktop
     document.querySelectorAll('.nav-links a').forEach(link => {
       link.addEventListener('click', function(e) {
         const href = this.getAttribute('href');
@@ -86,9 +120,7 @@
           document.body.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
           document.body.style.opacity = '0';
           document.body.style.transform = 'translateY(-20px)';
-          setTimeout(() => {
-            window.location.href = href;
-          }, 400);
+          setTimeout(() => { window.location.href = href; }, 400);
         }
       });
     });
