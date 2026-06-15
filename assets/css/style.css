@@ -200,7 +200,7 @@ body {
 }
 
 .hero-mascote img {
-  width: 420px;
+  width: 800px;
   max-width: 100%;
   filter: drop-shadow(0 0 40px rgba(0, 180, 255, 0.3));
   animation: flutuar 3s ease-in-out infinite;
@@ -393,7 +393,7 @@ body {
   }
 
   .hero-mascote img {
-    width: 220px;
+    width: 800px;
     margin-bottom: 10px;
   }
 
