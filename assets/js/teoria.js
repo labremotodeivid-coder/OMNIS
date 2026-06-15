@@ -60,7 +60,7 @@ function mostrarMateria(idx) {
   container.innerHTML = `
     <div class="cards-teoria" id="cardsTeoria">
       ${materia.topicos.map(t => `
-        <div class="card-teoria" onclick="abrirTopico('${t.link}')" style="--cor-materia: ${materia.cor}">
+        <div class="card-teoria" onclick="abrirTopico('${materia.id}','${t.id}','${materia.cor}','${materia.icone}','${materia.nome}','${t.titulo}')" style="--cor-materia: ${materia.cor}">
           <div class="card-teoria-img">
             <img src="${t.imagem}" alt="${t.titulo}"
               onerror="this.style.display='none';this.parentElement.classList.add('sem-imagem')" />
@@ -71,7 +71,7 @@ function mostrarMateria(idx) {
           <div class="card-teoria-body">
             <h3>${t.titulo}</h3>
             <p>${t.descricao}</p>
-            <a href="${t.link}" class="btn-card" onclick="event.stopPropagation()">Acessar</a>
+            <a class="btn-card" onclick="event.stopPropagation();abrirTopico('${materia.id}','${t.id}','${materia.cor}','${materia.icone}','${materia.nome}','${t.titulo}')">Acessar</a>
           </div>
         </div>
       `).join('')}
@@ -85,9 +85,19 @@ function mostrarMateria(idx) {
 }
 
 // =====================================================================
-// ABRIR TÓPICO
+// ABRIR TÓPICO — navega para materia.html com parâmetros
 // =====================================================================
-function abrirTopico(link) {
-  if (!link || link === '#') return;
-  window.location.href = link;
+function abrirTopico(materiaId, topicoId, cor, icone, materiaNome, topicoNome) {
+  const params = new URLSearchParams({
+    materia: materiaNome,
+    topico:  topicoNome,
+    cor:     cor,
+    icone:   icone,
+  });
+  document.body.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+  document.body.style.opacity    = '0';
+  document.body.style.transform  = 'translateY(-20px)';
+  setTimeout(() => {
+    window.location.href = `materia.html?${params.toString()}`;
+  }, 400);
 }

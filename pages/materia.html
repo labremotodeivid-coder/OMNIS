@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OMNIS - Matéria</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/materia.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-logo">
+      <a href="../index.html"><img src="../assets/images/logo.png" alt="OMNIS Logo" class="logo-img" /></a>
+    </div>
+    <ul class="nav-links">
+      <li><a href="jogos.html">Jogos</a></li>
+      <li><a href="experimentos.html">Experimentos</a></li>
+      <li><a href="teoria.html" class="ativo">Teoria</a></li>
+      <li><a href="comunidade.html">Comunidade</a></li>
+    </ul>
+    <div class="nav-buttons">
+      <a href="#" class="btn-login">Entrar</a>
+      <a href="#" class="btn-cadastro">Cadastrar</a>
+    </div>
+    <div class="nav-hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- Menu mobile -->
+  <div class="nav-mobile-menu" id="mobileMenu">
+    <a href="jogos.html">🎮 Jogos</a>
+    <a href="experimentos.html">🔬 Experimentos</a>
+    <a href="teoria.html">📚 Teoria</a>
+    <a href="comunidade.html">🌐 Comunidade</a>
+    <div class="mobile-btns">
+      <a href="#" class="btn-login">Entrar</a>
+      <a href="#" class="btn-cadastro">Cadastrar</a>
+    </div>
+  </div>
+
+  <!-- HEADER DA MATÉRIA -->
+  <section class="materia-header" id="materiaHeader">
+    <button class="btn-voltar" onclick="voltarTeoria()">← Voltar</button>
+    <div class="materia-header-info">
+      <span class="materia-icone" id="materiaIcone">⚛️</span>
+      <h1 id="materiaNome">Carregando...</h1>
+    </div>
+    <div class="materia-topico-nome" id="materiaTopicoNome"></div>
+  </section>
+
+  <!-- 5 ABAS -->
+  <div class="abas-container">
+    <div class="abas-nav">
+      <button class="aba-btn ativo" onclick="mostrarAba('introducao')">📖 Introdução</button>
+      <button class="aba-btn" onclick="mostrarAba('modulos')">📚 Módulos</button>
+      <button class="aba-btn" onclick="mostrarAba('videoaulas')">🎬 Videoaulas</button>
+      <button class="aba-btn" onclick="mostrarAba('formulas')">📐 Fórmulas</button>
+      <button class="aba-btn" onclick="mostrarAba('exercicios')">✏️ Exercícios</button>
+    </div>
+  </div>
+
+  <!-- CONTEÚDO DAS ABAS -->
+  <div class="aba-conteudo" id="abaConteudo">
+    <div class="loading-box">
+      <div class="loading-spinner"></div>
+      <span>Carregando conteúdo...</span>
+    </div>
+  </div>
+
+  <script src="../assets/js/materia.js"></script>
+  <script>
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('aberto');
+    }
+    function voltarTeoria() {
+      document.body.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+      document.body.style.opacity = '0';
+      document.body.style.transform = 'translateY(-20px)';
+      setTimeout(() => { window.location.href = 'teoria.html'; }, 400);
+    }
+  </script>
+</body>
+</html>
