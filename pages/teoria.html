@@ -24,104 +24,37 @@
       <a href="#" class="btn-login">Entrar</a>
       <a href="#" class="btn-cadastro">Cadastrar</a>
     </div>
+    <div class="nav-hamburger" onclick="toggleMenu()" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
   </nav>
 
-  <!-- HEADER DA PÁGINA -->
+  <!-- Menu mobile -->
+  <div class="nav-mobile-menu" id="mobileMenu">
+    <a href="jogos.html">🎮 Jogos</a>
+    <a href="experimentos.html">🔬 Experimentos</a>
+    <a href="teoria.html">📚 Teoria</a>
+    <a href="comunidade.html">🌐 Comunidade</a>
+    <div class="mobile-btns">
+      <a href="#" class="btn-login">Entrar</a>
+      <a href="#" class="btn-cadastro">Cadastrar</a>
+    </div>
+  </div>
+
+  <!-- HEADER -->
   <section class="teoria-header">
     <h1>📚 Teoria</h1>
     <p>Escolha uma matéria e explore os conteúdos</p>
   </section>
 
-  <!-- ABAS DAS MATÉRIAS -->
+  <!-- ABAS E CARDS — gerados via JS -->
   <section class="teoria-container">
-    <div class="materias-tabs">
-      <button class="tab-btn ativo" onclick="mostrarMateria('fisica')">⚛️ Física</button>
-      <button class="tab-btn" onclick="mostrarMateria('matematica')">📐 Matemática</button>
-      <button class="tab-btn" onclick="mostrarMateria('quimica')">🧪 Química</button>
-      <button class="tab-btn" onclick="mostrarMateria('biologia')">🧬 Biologia</button>
-      <button class="tab-btn" onclick="mostrarMateria('programacao')">💻 Programação</button>
+    <!-- Tabs das matérias -->
+    <div class="materias-tabs" id="materiasTabs">
+      <div class="tab-loading">Carregando matérias...</div>
     </div>
-
-    <!-- FÍSICA -->
-    <div class="materia-content ativo" id="fisica">
-      <div class="cards-teoria">
-        <div class="card-teoria"><div class="card-teoria-icon">🌊</div><h3>Mecânica</h3><p>Estude movimento, força e energia com exemplos do dia a dia.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">⚡</div><h3>Eletromagnetismo</h3><p>Entenda campos elétricos, magnéticos e suas interações.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🌡️</div><h3>Termodinâmica</h3><p>Explore calor, temperatura e as leis da termodinâmica.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🔭</div><h3>Óptica</h3><p>Descubra como a luz se comporta, refração e reflexão.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🎵</div><h3>Ondulatória</h3><p>Aprenda sobre ondas, som e fenômenos ondulatórios.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">⚛️</div><h3>Física Moderna</h3><p>Relatividade, física quântica e o universo subatômico.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🪐</div><h3>Gravitação</h3><p>Lei da gravitação universal e mecânica celeste.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">💧</div><h3>Hidrostática</h3><p>Pressão, empuxo e comportamento dos fluidos.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🔋</div><h3>Circuitos Elétricos</h3><p>Resistência, corrente, tensão e circuitos em série e paralelo.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">☢️</div><h3>Física Nuclear</h3><p>Radioatividade, fissão, fusão e energia nuclear.</p><a href="#" class="btn-card">Acessar</a></div>
-      </div>
-    </div>
-
-    <!-- MATEMÁTICA -->
-    <div class="materia-content" id="matematica">
-      <div class="cards-teoria">
-        <div class="card-teoria"><div class="card-teoria-icon">➕</div><h3>Álgebra</h3><p>Equações, inequações e expressões algébricas.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">📈</div><h3>Funções</h3><p>Funções lineares, quadráticas, exponenciais e logarítmicas.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">📐</div><h3>Geometria Plana</h3><p>Áreas, perímetros e propriedades das figuras planas.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">📦</div><h3>Geometria Espacial</h3><p>Volumes e superfícies de sólidos geométricos.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🔢</div><h3>Trigonometria</h3><p>Seno, cosseno, tangente e identidades trigonométricas.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">∞</div><h3>Cálculo</h3><p>Limites, derivadas e integrais de funções reais.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🎲</div><h3>Probabilidade</h3><p>Eventos, espaço amostral e cálculo de probabilidades.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">📊</div><h3>Estatística</h3><p>Média, mediana, moda e análise de dados.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🔣</div><h3>Matrizes e Determinantes</h3><p>Operações com matrizes e cálculo de determinantes.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🔵</div><h3>Geometria Analítica</h3><p>Pontos, retas e cônicas no plano cartesiano.</p><a href="#" class="btn-card">Acessar</a></div>
-      </div>
-    </div>
-
-    <!-- QUÍMICA -->
-    <div class="materia-content" id="quimica">
-      <div class="cards-teoria">
-        <div class="card-teoria"><div class="card-teoria-icon">⚗️</div><h3>Química Geral</h3><p>Matéria, energia, átomos e tabela periódica.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🔗</div><h3>Ligações Químicas</h3><p>Ligações iônicas, covalentes e metálicas.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">⚖️</div><h3>Estequiometria</h3><p>Cálculos químicos e balanceamento de equações.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">💧</div><h3>Soluções</h3><p>Concentração, solubilidade e propriedades das soluções.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">⚡</div><h3>Eletroquímica</h3><p>Pilhas, eletrólise e reações de oxirredução.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🌡️</div><h3>Termoquímica</h3><p>Entalpia, calor de reação e calorimetria.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🧴</div><h3>Química Orgânica</h3><p>Carbono, hidrocarbonetos e funções orgânicas.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🫧</div><h3>Ácidos e Bases</h3><p>pH, neutralização e teoria de Arrhenius e Brønsted.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🔄</div><h3>Equilíbrio Químico</h3><p>Constante de equilíbrio e princípio de Le Chatelier.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">💊</div><h3>Bioquímica</h3><p>Proteínas, carboidratos, lipídios e ácidos nucleicos.</p><a href="#" class="btn-card">Acessar</a></div>
-      </div>
-    </div>
-
-    <!-- BIOLOGIA -->
-    <div class="materia-content" id="biologia">
-      <div class="cards-teoria">
-        <div class="card-teoria"><div class="card-teoria-icon">🦠</div><h3>Citologia</h3><p>Estrutura e funcionamento das células.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🧬</div><h3>Genética</h3><p>Hereditariedade, DNA, RNA e leis de Mendel.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🌱</div><h3>Botânica</h3><p>Estrutura, fisiologia e classificação das plantas.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🐾</div><h3>Zoologia</h3><p>Classificação e características dos animais.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🌍</div><h3>Ecologia</h3><p>Ecossistemas, cadeias alimentares e meio ambiente.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🔬</div><h3>Histologia</h3><p>Tecidos animais e suas funções no organismo.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🫀</div><h3>Fisiologia Humana</h3><p>Sistemas do corpo humano e seu funcionamento.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🦋</div><h3>Evolução</h3><p>Teorias evolutivas, seleção natural e especiação.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🍄</div><h3>Microbiologia</h3><p>Vírus, bactérias, fungos e protistas.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">⚗️</div><h3>Bioquímica Celular</h3><p>Fotossíntese, respiração celular e metabolismo.</p><a href="#" class="btn-card">Acessar</a></div>
-      </div>
-    </div>
-
-    <!-- PROGRAMAÇÃO -->
-    <div class="materia-content" id="programacao">
-      <div class="cards-teoria">
-        <div class="card-teoria"><div class="card-teoria-icon">🌐</div><h3>HTML</h3><p>Estrutura de páginas web com tags e semântica.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🎨</div><h3>CSS</h3><p>Estilização, layouts e design responsivo.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">⚙️</div><h3>JavaScript</h3><p>Lógica de programação, DOM e interatividade.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🐍</div><h3>Python</h3><p>Linguagem versátil para web, dados e automação.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">☕</div><h3>Java</h3><p>Programação orientada a objetos e aplicações robustas.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">⚛️</div><h3>React</h3><p>Biblioteca JavaScript para interfaces modernas.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🗄️</div><h3>Banco de Dados</h3><p>SQL, modelagem e consultas em banco de dados.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🔀</div><h3>Algoritmos</h3><p>Lógica, estruturas de dados e resolução de problemas.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🐙</div><h3>Git e GitHub</h3><p>Controle de versão e colaboração em projetos.</p><a href="#" class="btn-card">Acessar</a></div>
-        <div class="card-teoria"><div class="card-teoria-icon">🤖</div><h3>Inteligência Artificial</h3><p>Machine learning, redes neurais e IA aplicada.</p><a href="#" class="btn-card">Acessar</a></div>
-      </div>
-    </div>
-
+    <!-- Cards dos tópicos -->
+    <div id="topicosContainer"></div>
   </section>
 
   <!-- FOOTER -->
@@ -131,26 +64,21 @@
   </footer>
 
   <script src="../assets/js/script.js"></script>
+  <script src="../assets/js/teoria.js"></script>
   <script>
-    function mostrarMateria(id) {
-      document.querySelectorAll('.materia-content').forEach(m => m.classList.remove('ativo'));
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('ativo'));
-      document.getElementById(id).classList.add('ativo');
-      event.target.classList.add('ativo');
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('aberto');
     }
-
-    // Animação de saída ao navegar
-    document.querySelectorAll('.nav-logo a, .nav-links a').forEach(link => {
+    document.querySelectorAll('.nav-mobile-menu a, .nav-links a').forEach(link => {
       link.addEventListener('click', function(e) {
+        document.getElementById('mobileMenu').classList.remove('aberto');
         const href = this.getAttribute('href');
         if (href && href !== '#') {
           e.preventDefault();
           document.body.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
           document.body.style.opacity = '0';
           document.body.style.transform = 'translateY(-20px)';
-          setTimeout(() => {
-            window.location.href = href;
-          }, 400);
+          setTimeout(() => { window.location.href = href; }, 400);
         }
       });
     });
