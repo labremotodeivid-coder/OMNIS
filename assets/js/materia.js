@@ -5,95 +5,88 @@
 
 const REPO = 'https://raw.githubusercontent.com/labremotodeivid-coder/OMNIS-ACADEMY/main';
 
-// Pega parâmetros da URL: ?materia=Física&topico=Mecânica
-const params   = new URLSearchParams(window.location.search);
-const MATERIA  = params.get('materia')  || 'Física';
-const TOPICO   = params.get('topico')   || 'Mecânica';
-const COR      = params.get('cor')      || '#42A5F5';
-const ICONE    = params.get('icone')    || '⚛️';
-
-// Aba atual
-let abaAtiva = 'introducao';
+// Pega parâmetros da URL
+const params  = new URLSearchParams(window.location.search);
+const MATERIA = params.get('materia') || 'Física';
+const TOPICO  = params.get('topico')  || 'Mecânica';
+const COR     = params.get('cor')     || '#42A5F5';
+const ICONE   = params.get('icone')   || '⚛️';
 
 // Cache de conteúdo já carregado
 const cache = {};
 
+// Caminhos exatos conforme GitHub
+function path(pasta, arquivo) {
+  return `${REPO}/${encodeURIComponent(MATERIA)}/${encodeURIComponent(TOPICO)}/${pasta}/${arquivo}`;
+}
+
 // =====================================================================
-// INIT
+// INIT — abre direto na introdução
 // =====================================================================
 document.addEventListener('DOMContentLoaded', () => {
-  // Atualiza header
-  document.getElementById('materiaNome').textContent    = MATERIA;
-  document.getElementById('materiaIcone').textContent   = ICONE;
+  document.getElementById('materiaNome').textContent     = MATERIA;
+  document.getElementById('materiaIcone').textContent    = ICONE;
   document.getElementById('materiaTopicoNome').textContent = TOPICO;
   document.getElementById('materiaHeader').style.setProperty('--cor-materia', COR);
-  document.title = `OMNIS - ${TOPICO}`;
-
-  // Aplica cor nos botões de aba
   document.querySelectorAll('.aba-btn').forEach(btn => {
     btn.style.setProperty('--cor-materia', COR);
   });
+  document.title = `OMNIS - ${TOPICO}`;
 
-  // Carrega aba inicial
+  // Abre direto na introdução
   mostrarAba('introducao');
 });
 
 // =====================================================================
 // MOSTRAR ABA
 // =====================================================================
-async function mostrarAba(aba) {
-  abaAtiva = aba;
+function mostrarAba(aba, el) {
+  document.querySelectorAll('.aba-btn').forEach(b => b.classList.remove('ativo'));
+  if (el) el.classList.add('ativo');
+  else {
+    const btns = document.querySelectorAll('.aba-btn');
+    const map  = ['introducao','modulos','videoaulas','formulas','exercicios'];
+    const idx  = map.indexOf(aba);
+    if (idx >= 0) btns[idx]?.classList.add('ativo');
+  }
 
-  // Atualiza botões
-  document.querySelectorAll('.aba-btn').forEach(btn => {
-    btn.classList.remove('ativo');
-  });
-  event?.target?.classList.add('ativo');
-
-  // Mostra loading
   mostrarLoading();
 
-  // Carrega conteúdo
   switch (aba) {
-    case 'introducao': await carregarIntroducao(); break;
-    case 'modulos':    await carregarModulos();    break;
-    case 'videoaulas': await carregarVideoaulas(); break;
-    case 'formulas':   await carregarFormulas();   break;
-    case 'exercicios': await carregarExercicios(); break;
+    case 'introducao': carregarIntroducao(); break;
+    case 'modulos':    carregarModulos();    break;
+    case 'videoaulas': carregarVideoaulas(); break;
+    case 'formulas':   carregarFormulas();   break;
+    case 'exercicios': carregarExercicios(); break;
   }
 }
 
 // =====================================================================
 // ABA 1 — INTRODUÇÃO
+// introdução com ç minúsculo conforme GitHub
 // =====================================================================
 async function carregarIntroducao() {
-  const url = `${REPO}/${MATERIA}/${TOPICO}/Introdução/intro.md`;
+  const url = path('introdu%C3%A7%C3%A3o', 'intro.md');
   const md  = await fetchMd(url);
   if (!md) { mostrarErro('Introdução não encontrada.'); return; }
-
   document.getElementById('abaConteudo').innerHTML = `
-    <div class="conteudo-md">
-      ${renderMd(md)}
-    </div>
+    <div class="conteudo-md">${renderMd(md)}</div>
   `;
 }
 
 // =====================================================================
-// ABA 2 — MÓDULOS DE TEORIA
+// ABA 2 — MÓDULOS (teoria minúsculo)
 // =====================================================================
 async function carregarModulos() {
-  // Tenta carregar Cap1, Cap2, Cap3... até não encontrar
   const caps = [];
   for (let i = 1; i <= 10; i++) {
-    const url = `${REPO}/${MATERIA}/${TOPICO}/Teoria/Cap${i}.md`;
+    const url = path('teoria', `Cap${i}.md`);
     const md  = await fetchMd(url);
     if (!md) break;
     caps.push({ numero: i, conteudo: md, titulo: extrairTitulo(md) });
   }
-
   if (caps.length === 0) { mostrarErro('Nenhum módulo encontrado.'); return; }
-
-  // Se nenhum cap aberto, mostra lista de cards
+  cache.caps = caps;
   document.getElementById('abaConteudo').innerHTML = `
     <div class="modulos-lista">
       ${caps.map(c => `
@@ -107,40 +100,31 @@ async function carregarModulos() {
       `).join('')}
     </div>
   `;
-
-  // Salva caps no cache
-  cache.caps = caps;
 }
 
 async function abrirModulo(num) {
-  const caps = cache.caps || [];
-  const cap  = caps.find(c => c.numero === num);
+  const cap = (cache.caps || []).find(c => c.numero === num);
   if (!cap) return;
-
   document.getElementById('abaConteudo').innerHTML = `
     <div class="modulo-aberto">
       <button class="btn-voltar-modulo" onclick="carregarModulos()">← Voltar aos módulos</button>
-      <div class="conteudo-md">
-        ${renderMd(cap.conteudo)}
-      </div>
+      <div class="conteudo-md">${renderMd(cap.conteudo)}</div>
     </div>
   `;
 }
 
 // =====================================================================
-// ABA 3 — VIDEOAULAS
+// ABA 3 — VIDEOAULAS (videoaulas minúsculo)
 // =====================================================================
 async function carregarVideoaulas() {
-  const url  = `${REPO}/${MATERIA}/${TOPICO}/Videoaulas/videos.json`;
+  const url  = path('videoaulas', 'videos.json');
   const data = await fetchJson(url);
   if (!data) { mostrarErro('Videoaulas não encontradas.'); return; }
-
   const videos = data.videoaulas || [];
-
   document.getElementById('abaConteudo').innerHTML = `
     <div class="videos-grid">
       ${videos.map(v => `
-        <div class="video-card" onclick="abrirVideo('${v.youtube_id}', '${v.titulo}')">
+        <div class="video-card" onclick="abrirVideo('${v.youtube_id}','${v.titulo}')">
           <div class="video-thumb">
             <img src="https://img.youtube.com/vi/${v.youtube_id}/mqdefault.jpg" alt="${v.titulo}" />
             <div class="video-play">▶</div>
@@ -176,34 +160,30 @@ function abrirVideo(youtubeId, titulo) {
 }
 
 // =====================================================================
-// ABA 4 — FÓRMULAS
+// ABA 4 — FÓRMULAS (formulas sem acento)
 // =====================================================================
 async function carregarFormulas() {
-  const url = `${REPO}/${MATERIA}/${TOPICO}/Fórmulas/formulas.md`;
+  const url = path('formulas', 'formulas.md');
   const md  = await fetchMd(url);
   if (!md) { mostrarErro('Fórmulas não encontradas.'); return; }
-
   document.getElementById('abaConteudo').innerHTML = `
-    <div class="conteudo-md formulas-conteudo">
-      ${renderMd(md)}
-    </div>
+    <div class="conteudo-md formulas-conteudo">${renderMd(md)}</div>
   `;
 }
 
 // =====================================================================
-// ABA 5 — EXERCÍCIOS
+// ABA 5 — EXERCÍCIOS (exercicios sem acento)
 // =====================================================================
 async function carregarExercicios() {
   const exercicios = [];
   for (let i = 1; i <= 10; i++) {
-    const url = `${REPO}/${MATERIA}/${TOPICO}/Exercícios/ex${i}.md`;
+    const url = path('exercicios', `ex${i}.md`);
     const md  = await fetchMd(url);
     if (!md) break;
     exercicios.push({ numero: i, conteudo: md, titulo: extrairTitulo(md) });
   }
-
   if (exercicios.length === 0) { mostrarErro('Exercícios não encontrados.'); return; }
-
+  cache.exercicios = exercicios;
   document.getElementById('abaConteudo').innerHTML = `
     <div class="modulos-lista">
       ${exercicios.map(e => `
@@ -217,21 +197,15 @@ async function carregarExercicios() {
       `).join('')}
     </div>
   `;
-
-  cache.exercicios = exercicios;
 }
 
 async function abrirExercicio(num) {
-  const exercicios = cache.exercicios || [];
-  const ex         = exercicios.find(e => e.numero === num);
+  const ex = (cache.exercicios || []).find(e => e.numero === num);
   if (!ex) return;
-
   document.getElementById('abaConteudo').innerHTML = `
     <div class="modulo-aberto">
       <button class="btn-voltar-modulo" onclick="carregarExercicios()">← Voltar aos exercícios</button>
-      <div class="conteudo-md exercicios-conteudo">
-        ${renderMd(ex.conteudo)}
-      </div>
+      <div class="conteudo-md exercicios-conteudo">${renderMd(ex.conteudo)}</div>
     </div>
   `;
 }
@@ -277,51 +251,33 @@ function mostrarLoading() {
 
 function mostrarErro(msg) {
   document.getElementById('abaConteudo').innerHTML = `
-    <div class="erro-box">
-      <span>⚠️ ${msg}</span>
-    </div>
+    <div class="erro-box"><span>⚠️ ${msg}</span></div>
   `;
 }
 
-// Renderizador de Markdown simples
+// Renderizador de Markdown
 function renderMd(md) {
   return md
-    // Títulos
     .replace(/^### (.+)$/gm, '<h3>$1</h3>')
     .replace(/^## (.+)$/gm,  '<h2>$1</h2>')
     .replace(/^# (.+)$/gm,   '<h1>$1</h1>')
-    // Negrito e itálico
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g,     '<em>$1</em>')
-    // Código inline
-    .replace(/`(.+?)`/g, '<code>$1</code>')
-    // Bloco de código
     .replace(/```[\w]*\n([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
-    // Blockquote
+    .replace(/`(.+?)`/g, '<code>$1</code>')
     .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
-    // Details/summary (gabarito)
     .replace(/<details>\n<summary>(.+?)<\/summary>\n([\s\S]*?)<\/details>/g,
       '<details><summary>$1</summary><div class="gabarito">$2</div></details>')
-    // Tabelas
     .replace(/^\|(.+)\|$/gm, (match) => {
       if (match.includes('---')) return '';
       const cols = match.split('|').filter(c => c.trim()).map(c => `<td>${c.trim()}</td>`).join('');
       return `<tr>${cols}</tr>`;
     })
-    // Envolve linhas de tabela em <table>
-    .replace(/(<tr>.*<\/tr>\n?)+/g, m => `<table>${m}</table>`)
-    // Listas não ordenadas
+    .replace(/(<tr>[\s\S]*?<\/tr>\n?)+/g, m => `<table>${m}</table>`)
     .replace(/^[-*] (.+)$/gm, '<li>$1</li>')
-    .replace(/(<li>.*<\/li>\n?)+/g, m => `<ul>${m}</ul>`)
-    // Listas ordenadas
-    .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
-    // Linha horizontal
+    .replace(/(<li>[\s\S]*?<\/li>\n?)+/g, m => `<ul>${m}</ul>`)
     .replace(/^---$/gm, '<hr/>')
-    // Parágrafos
-    .replace(/\n\n/g, '</p><p>')
-    .replace(/^(?!<[huptbcdl])(.+)$/gm, (m) => m.startsWith('<') ? m : `<p>${m}</p>`)
-    // Limpa p vazios
-    .replace(/<p><\/p>/g, '')
-    .replace(/<p>(<[huptbcdl])/g, '$1')
-    .replace(/(<\/[huptbcdl][^>]*>)<\/p>/g, '$1');
+    .replace(/\n\n+/g, '</p><p>')
+    .replace(/^(?!<[huptbcdl])(.+)$/gm, m => m.startsWith('<') ? m : `<p>${m}</p>`)
+    .replace(/<p><\/p>/g, '');
 }
