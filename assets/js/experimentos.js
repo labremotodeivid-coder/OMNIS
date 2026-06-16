@@ -2,7 +2,7 @@
 // experimentos.js — OMNIS | Tela de Experimentos
 // Fiel ao experimentos_screen.dart
 // =====================================================================
-
+/*
 const EXPERIMENTOS = [
   {
     id:        'trilho',
@@ -222,4 +222,4 @@ function mostrarToast(msg) {
   t.textContent = msg;
   t.style.opacity = '1';
   setTimeout(() => { t.style.opacity = '0'; }, 3000);
-}
+} */

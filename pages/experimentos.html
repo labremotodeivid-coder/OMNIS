@@ -1,3 +1,4 @@
+<!--
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -9,7 +10,6 @@
 </head>
 <body>
 
-  <!-- NAVBAR -->
   <nav class="navbar">
     <div class="nav-logo">
       <a href="../index.html"><img src="../assets/images/logo.png" alt="OMNIS Logo" class="logo-img" /></a>
@@ -26,7 +26,6 @@
     </div>
   </nav>
 
-  <!-- HEADER -->
   <section class="exp-header">
     <h1>🔬 Experimentos Remotos</h1>
     <p>Controle laboratórios reais de qualquer lugar do mundo</p>
@@ -35,11 +34,9 @@
     </button>
   </section>
 
-  <!-- LISTA DE EXPERIMENTOS -->
   <section class="exp-container">
     <div class="exp-grid" id="expGrid">
 
-      <!-- CARD: TRILHO DE AR -->
       <div class="exp-card" onclick="abrirExperimento('trilho')">
         <div class="exp-card-img">
           <img src="https://raw.githubusercontent.com/labremotodeivid-coder/labremoto/main/experimentos_imagens/trilho-de-ar.jpg"
@@ -53,13 +50,12 @@
           <h3>Trilho de Ar</h3>
           <p>Estudo de MRU e Leis de Newton com carrinho em trilho de ar comprimido.</p>
           <div class="exp-tempo" id="tempo-trilho" style="display:none">
-            ⏱ Disponível em <span id="countdown-trilho">--:--</span>
+            ⏱ Disponível em <span id="countdown-trilho">- -:- -</span>
           </div>
           <div class="exp-card-footer">Ver detalhes →</div>
         </div>
       </div>
 
-      <!-- CARD: ANEL DE THOMSON -->
       <div class="exp-card" onclick="abrirExperimento('thomson')">
         <div class="exp-card-img">
           <img src="https://raw.githubusercontent.com/labremotodeivid-coder/labremoto/main/experimentos_imagens/anel-de-thomson.jpg"
@@ -73,13 +69,12 @@
           <h3>Anel de Thomson</h3>
           <p>Experimento sobre eletromagnetismo e indução magnética.</p>
           <div class="exp-tempo" id="tempo-thomson" style="display:none">
-            ⏱ Disponível em <span id="countdown-thomson">--:--</span>
+            ⏱ Disponível em <span id="countdown-thomson">- -:- -</span>
           </div>
           <div class="exp-card-footer">Ver detalhes →</div>
         </div>
       </div>
 
-      <!-- CARD: TITULAÇÃO -->
       <div class="exp-card" onclick="abrirExperimento('titulacao')">
         <div class="exp-card-img">
           <img src="https://raw.githubusercontent.com/labremotodeivid-coder/labremoto/main/experimentos_imagens/titulacao.jpg"
@@ -93,7 +88,7 @@
           <h3>Titulação</h3>
           <p>Experimento de titulação ácido-base com HCl e NaOH.</p>
           <div class="exp-tempo" id="tempo-titulacao" style="display:none">
-            ⏱ Disponível em <span id="countdown-titulacao">--:--</span>
+            ⏱ Disponível em <span id="countdown-titulacao">- -:- -</span>
           </div>
           <div class="exp-card-footer">Ver detalhes →</div>
         </div>
@@ -102,14 +97,10 @@
     </div>
   </section>
 
-  <!-- MODAL DO EXPERIMENTO -->
   <div class="exp-modal" id="expModal">
-    <div class="exp-modal-content" id="expModalContent">
-      <!-- conteúdo inserido via JS -->
-    </div>
+    <div class="exp-modal-content" id="expModalContent"></div>
   </div>
 
-  <!-- FOOTER -->
   <footer class="footer">
     <img src="../assets/images/logo.png" alt="OMNIS" class="footer-logo" />
     <p>© 2025 OMNIS - Integrated Educational Platform. Todos os direitos reservados.</p>
@@ -118,7 +109,6 @@
   <script src="../assets/js/script.js"></script>
   <script src="../assets/js/experimentos.js"></script>
   <script>
-    // Animação de saída ao navegar
     document.querySelectorAll('.nav-logo a, .nav-links a').forEach(link => {
       link.addEventListener('click', function(e) {
         const href = this.getAttribute('href');
@@ -134,3 +124,4 @@
   </script>
 </body>
 </html>
+-->
