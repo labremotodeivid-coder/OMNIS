@@ -72,6 +72,7 @@ async function carregarIntroducao() {
   document.getElementById('abaConteudo').innerHTML = `
     <div class="conteudo-md">${renderMd(md)}</div>
   `;
+  if (window.MathJax) MathJax.typesetPromise();
 }
 
 // =====================================================================
@@ -111,6 +112,7 @@ async function abrirModulo(num) {
       <div class="conteudo-md">${renderMd(cap.conteudo)}</div>
     </div>
   `;
+  if (window.MathJax) MathJax.typesetPromise();
 }
 
 // =====================================================================
@@ -169,6 +171,7 @@ async function carregarFormulas() {
   document.getElementById('abaConteudo').innerHTML = `
     <div class="conteudo-md formulas-conteudo">${renderMd(md)}</div>
   `;
+  if (window.MathJax) MathJax.typesetPromise();
 }
 
 // =====================================================================
@@ -208,6 +211,7 @@ async function abrirExercicio(num) {
       <div class="conteudo-md exercicios-conteudo">${renderMd(ex.conteudo)}</div>
     </div>
   `;
+  if (window.MathJax) MathJax.typesetPromise();
 }
 
 // =====================================================================
