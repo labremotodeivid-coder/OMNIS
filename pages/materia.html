@@ -2,47 +2,58 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OMNIS - Matéria</title>
   <link rel="stylesheet" href="../assets/css/style.css" />
   <link rel="stylesheet" href="../assets/css/materia.css" />
-  <!-- MathJax — renderiza LaTeX nos arquivos .md -->
+
+  <!-- MathJax — renderiza LaTeX dentro dos arquivos .md.
+       Carregado aqui (e não em materia.js) porque a config global
+       window.MathJax precisa existir ANTES do script da CDN rodar. -->
   <script>
     window.MathJax = {
       tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        inlineMath:   [['$', '$'], ['\\(', '\\)']],
+        displayMath:  [['$$', '$$'], ['\\[', '\\]']],
       },
       options: {
-        skipHtmlTags: ['script','noscript','style','textarea','pre']
-      }
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      },
     };
   </script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
 </head>
 <body>
 
-  <!-- NAVBAR -->
+  <!-- ==========================================================
+       NAVBAR + MENU MOBILE
+       Toggle do hamburguer tratado de forma genérica em
+       assets/js/script.js — sem JS inline aqui.
+  =========================================================== -->
   <nav class="navbar">
     <div class="nav-logo">
-      <a href="../index.html"><img src="../assets/images/logo.png" alt="OMNIS Logo" class="logo-img" /></a>
+      <a href="../index.html">
+        <img src="../assets/images/logo.png" alt="OMNIS Logo" class="logo-img" />
+      </a>
     </div>
+
     <ul class="nav-links">
       <li><a href="jogos.html">Jogos</a></li>
       <li><a href="experimentos.html">Experimentos</a></li>
       <li><a href="teoria.html" class="ativo">Teoria</a></li>
       <li><a href="comunidade.html">Comunidade</a></li>
     </ul>
+
     <div class="nav-buttons">
       <a href="#" class="btn-login">Entrar</a>
       <a href="#" class="btn-cadastro">Cadastrar</a>
     </div>
-    <div class="nav-hamburger" onclick="toggleMenu()">
+
+    <button class="nav-hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false">
       <span></span><span></span><span></span>
-    </div>
+    </button>
   </nav>
 
-  <!-- Menu mobile -->
   <div class="nav-mobile-menu" id="mobileMenu">
     <a href="jogos.html">🎮 Jogos</a>
     <a href="experimentos.html">🔬 Experimentos</a>
@@ -54,9 +65,13 @@
     </div>
   </div>
 
-  <!-- HEADER DA MATÉRIA -->
+  <!-- ==========================================================
+       HEADER DA MATÉRIA
+       Todo o conteúdo (ícone, nome, cor) é preenchido por
+       materia.js a partir dos parâmetros da URL.
+  =========================================================== -->
   <section class="materia-header" id="materiaHeader">
-    <button class="btn-voltar" onclick="voltarTeoria()">← Voltar</button>
+    <button class="btn-voltar" id="btnVoltar">← Voltar</button>
     <div class="materia-header-info">
       <span class="materia-icone" id="materiaIcone">⚛️</span>
       <h1 id="materiaNome">Carregando...</h1>
@@ -64,18 +79,22 @@
     <div class="materia-topico-nome" id="materiaTopicoNome"></div>
   </section>
 
-  <!-- 5 ABAS -->
+  <!-- ==========================================================
+       ABAS
+       data-aba identifica qual conteúdo carregar — o clique é
+       ligado via JS (materia.js), não onclick inline.
+  =========================================================== -->
   <div class="abas-container">
     <div class="abas-nav">
-      <button class="aba-btn ativo" onclick="mostrarAba('introducao',this)">📖 Introdução</button>
-      <button class="aba-btn" onclick="mostrarAba('modulos',this)">📚 Módulos</button>
-      <button class="aba-btn" onclick="mostrarAba('videoaulas',this)">🎬 Videoaulas</button>
-      <button class="aba-btn" onclick="mostrarAba('formulas',this)">📐 Fórmulas</button>
-      <button class="aba-btn" onclick="mostrarAba('exercicios',this)">✏️ Exercícios</button>
+      <button class="aba-btn ativo" data-aba="introducao">📖 Introdução</button>
+      <button class="aba-btn"       data-aba="modulos">📚 Módulos</button>
+      <button class="aba-btn"       data-aba="videoaulas">🎬 Videoaulas</button>
+      <button class="aba-btn"       data-aba="formulas">📐 Fórmulas</button>
+      <button class="aba-btn"       data-aba="exercicios">✏️ Exercícios</button>
     </div>
   </div>
 
-  <!-- CONTEÚDO DAS ABAS -->
+  <!-- Populado dinamicamente por materia.js de acordo com a aba ativa -->
   <div class="aba-conteudo" id="abaConteudo">
     <div class="loading-box">
       <div class="loading-spinner"></div>
@@ -83,17 +102,8 @@
     </div>
   </div>
 
+  <script src="../assets/js/script.js"></script>
   <script src="../assets/js/materia.js"></script>
-  <script>
-    function toggleMenu() {
-      document.getElementById('mobileMenu').classList.toggle('aberto');
-    }
-    function voltarTeoria() {
-      document.body.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-      document.body.style.opacity = '0';
-      document.body.style.transform = 'translateY(-20px)';
-      setTimeout(() => { window.location.href = 'teoria.html'; }, 400);
-    }
-  </script>
+
 </body>
 </html>
