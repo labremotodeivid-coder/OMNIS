@@ -60,19 +60,26 @@ body {
 .navbar {
   position: fixed;
   top: 0;
-  left: 0;
   width: 100%;
-  z-index: 9999;
+  z-index: 1000;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 10px 50px;
+  min-height: 80px; /* garante que a navbar contenha a logo de 70px sem transbordar */
 
-  background: #0a0e1a;
+  background: rgba(10, 14, 26, 0.95);
   border-bottom: 1px solid var(--borda-marca-sutil);
+  backdrop-filter: blur(10px);
+  transition: background var(--duracao-hover);
+}
 
-  backdrop-filter: none;
+/* Aplicada via JS (script.js) quando a página é rolada além do
+   limiar — fundo um pouco mais opaco para destacar a navbar do
+   conteúdo passando por baixo dela. */
+.navbar--scrolled {
+  background: rgba(8, 11, 21, 0.98);
 }
 
 .logo-img {
@@ -161,17 +168,14 @@ body {
 .hero {
   position: relative;
   min-height: 100vh;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   gap: 40px;
-
-  padding: 170px 60px 60px;
-
+  padding: 120px 60px 60px;
   background: url('../images/fundo.png') center center / cover no-repeat;
 }
+
 /* Camada escura semi-transparente sobre o fundo — garante contraste
    suficiente para o texto independente do brilho da imagem. */
 .hero::before {
@@ -374,9 +378,13 @@ body {
   .nav-hamburger {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 5px;
     padding: 6px;
     cursor: pointer;
+    background: none;
+    border: none;
+    outline: none;
   }
 
   .nav-hamburger span {
