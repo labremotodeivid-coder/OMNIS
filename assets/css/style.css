@@ -408,7 +408,7 @@ body {
     top: 64px;
     left: 0;
     right: 0;
-    z-index: 999;
+    z-index: 10000;
     flex-direction: column;
     padding: 16px 0;
     background: rgba(10, 14, 26, 0.98);
