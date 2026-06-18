@@ -1,46 +1,75 @@
-/* ===== RESET ===== */
+/* ============================================================
+   OMNIS — Design tokens
+   Centraliza cores, espaçamentos e timings usados no site.
+   Trocar a paleta inteira = editar só este bloco.
+============================================================ */
+:root {
+  /* Cores base */
+  --cor-bg:        #0a0e1a;
+  --cor-bg-footer: #080b15;
+  --cor-texto:     #ffffff;
+  --cor-texto-sec: #b0c4de;
+
+  /* Cor de marca (usada em links, bordas, botões, gradiente) */
+  --cor-marca:       #00b4ff;
+  --cor-marca-roxo:  #7b2fff;
+  --gradiente-marca: linear-gradient(135deg, var(--cor-marca), var(--cor-marca-roxo));
+
+  /* Opacidades reaproveitadas em bordas/fundos translúcidos */
+  --borda-marca-sutil: rgba(0, 180, 255, 0.15);
+  --borda-marca-media: rgba(0, 180, 255, 0.25);
+
+  /* Timings de transição/animação */
+  --duracao-hover: 0.3s;
+  --duracao-entrada: 0.6s;
+}
+
+/* ============================================================
+   RESET
+   Remove espaçamentos padrão do navegador e normaliza box-sizing
+   para que padding/border não alterem a largura declarada.
+============================================================ */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* ===== ANIMAÇÃO DE ENTRADA ===== */
-body {
-  animation: paginaEntrar 0.6s ease forwards;
-}
-
-@keyframes paginaEntrar {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ===== GERAL ===== */
+/* ============================================================
+   BASE / BODY
+============================================================ */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #0a0e1a;
-  color: #ffffff;
-  overflow-x: hidden;
+  background-color: var(--cor-bg);
+  color: var(--cor-texto);
+  overflow-x: hidden; /* evita scroll horizontal de elementos animados (mascote, hero) */
+
+  /* Fade-in suave ao carregar a página */
+  animation: pagina-entrar var(--duracao-entrada) ease forwards;
 }
 
-/* ===== NAVBAR ===== */
+@keyframes pagina-entrar {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   NAVBAR (desktop)
+   Fixa no topo com efeito de vidro (blur) sobre o conteúdo.
+============================================================ */
 .navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 50px;
-  background: rgba(10, 14, 26, 0.95);
-  border-bottom: 1px solid rgba(0, 180, 255, 0.15);
   position: fixed;
   top: 0;
   width: 100%;
   z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 50px;
+
+  background: rgba(10, 14, 26, 0.95);
+  border-bottom: 1px solid var(--borda-marca-sutil);
   backdrop-filter: blur(10px);
 }
 
@@ -50,9 +79,8 @@ body {
 }
 
 .nav-links {
-  list-style: none;
   display: flex;
-  gap: 0;
+  list-style: none;
 }
 
 .nav-links li {
@@ -60,22 +88,23 @@ body {
   align-items: center;
 }
 
+/* Separador vertical entre itens — aplicado a partir do 2º item */
 .nav-links li + li {
-  border-left: 1px solid rgba(0, 180, 255, 0.25);
+  border-left: 1px solid var(--borda-marca-media);
 }
 
 .nav-links a {
+  padding: 8px 28px;
+  color: var(--cor-texto-sec);
   text-decoration: none;
-  color: #b0c4de;
   font-size: 15px;
   font-weight: 500;
   letter-spacing: 0.5px;
-  padding: 8px 28px;
-  transition: color 0.3s;
+  transition: color var(--duracao-hover);
 }
 
 .nav-links a:hover {
-  color: #00b4ff;
+  color: var(--cor-marca);
 }
 
 .nav-buttons {
@@ -84,55 +113,71 @@ body {
 }
 
 .btn-login {
-  text-decoration: none;
-  color: #00b4ff;
-  border: 1px solid #00b4ff;
   padding: 8px 20px;
+  border: 1px solid var(--cor-marca);
   border-radius: 8px;
+  color: var(--cor-marca);
+  text-decoration: none;
   font-size: 14px;
-  transition: all 0.3s;
+  transition: all var(--duracao-hover);
 }
 
 .btn-login:hover {
-  background: #00b4ff;
-  color: #0a0e1a;
+  background: var(--cor-marca);
+  color: var(--cor-bg);
 }
 
 .btn-cadastro {
-  text-decoration: none;
-  background: linear-gradient(135deg, #00b4ff, #7b2fff);
-  color: #ffffff;
   padding: 8px 20px;
   border-radius: 8px;
+  background: var(--gradiente-marca);
+  color: var(--cor-texto);
+  text-decoration: none;
   font-size: 14px;
   font-weight: 600;
-  transition: opacity 0.3s;
+  transition: opacity var(--duracao-hover);
 }
 
 .btn-cadastro:hover {
   opacity: 0.85;
 }
 
-/* ===== HERO ===== */
+/* ============================================================
+   NAVBAR — botão hamburguer
+   Oculto por padrão; só aparece no breakpoint mobile (ver media
+   query no final do arquivo).
+============================================================ */
+.nav-hamburger {
+  display: none;
+}
+
+/* ============================================================
+   HERO
+   Seção de abertura com imagem de fundo, overlay escuro para
+   legibilidade do texto, e o mascote em destaque à direita.
+============================================================ */
 .hero {
+  position: relative;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 40px;
   padding: 120px 60px 60px;
   background: url('../images/fundo.png') center center / cover no-repeat;
-  position: relative;
-  gap: 40px;
 }
 
+/* Camada escura semi-transparente sobre o fundo — garante contraste
+   suficiente para o texto independente do brilho da imagem. */
 .hero::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(5, 8, 20, 0.45);
   z-index: 0;
+  background: rgba(5, 8, 20, 0.45);
 }
 
+/* Eleva todo o conteúdo direto do hero acima do overlay (::before) */
 .hero > * {
   position: relative;
   z-index: 1;
@@ -143,41 +188,42 @@ body {
 }
 
 .hero-text h1 {
+  margin-bottom: 20px;
   font-size: 54px;
   font-weight: 700;
   line-height: 1.2;
-  margin-bottom: 20px;
 }
 
+/* Texto com gradiente de marca recortado na própria tipografia */
 .destaque {
-  background: linear-gradient(135deg, #00b4ff, #7b2fff);
+  background: var(--gradiente-marca);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .subtitulo {
-  font-size: 18px;
-  color: #b0c4de;
-  line-height: 1.7;
   margin-bottom: 36px;
+  color: var(--cor-texto-sec);
+  font-size: 18px;
+  line-height: 1.7;
 }
 
 .hero-btns {
   display: flex;
-  gap: 16px;
   flex-wrap: wrap;
+  gap: 16px;
 }
 
 .btn-primary {
-  text-decoration: none;
-  background: linear-gradient(135deg, #00b4ff, #7b2fff);
-  color: #ffffff;
   padding: 14px 32px;
   border-radius: 10px;
+  background: var(--gradiente-marca);
+  color: var(--cor-texto);
+  text-decoration: none;
   font-size: 16px;
   font-weight: 600;
-  transition: opacity 0.3s, transform 0.2s;
+  transition: opacity var(--duracao-hover), transform 0.2s;
 }
 
 .btn-primary:hover {
@@ -186,13 +232,13 @@ body {
 }
 
 .btn-secondary {
-  text-decoration: none;
-  color: #00b4ff;
-  border: 1px solid #00b4ff;
   padding: 14px 32px;
+  border: 1px solid var(--cor-marca);
   border-radius: 10px;
+  color: var(--cor-marca);
+  text-decoration: none;
   font-size: 16px;
-  transition: all 0.3s;
+  transition: all var(--duracao-hover);
 }
 
 .btn-secondary:hover {
@@ -201,17 +247,19 @@ body {
 
 .hero-mascote img {
   width: 800px;
-  max-width: 100%;
+  max-width: 100%; /* nunca extrapola o container em telas estreitas */
   filter: drop-shadow(0 0 40px rgba(0, 180, 255, 0.3));
   animation: flutuar 3s ease-in-out infinite;
 }
 
 @keyframes flutuar {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-16px); }
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-16px); }
 }
 
-/* ===== SOBRE ===== */
+/* ============================================================
+   SOBRE
+============================================================ */
 .sobre {
   padding: 100px 60px;
   text-align: center;
@@ -219,20 +267,22 @@ body {
 }
 
 .sobre h2 {
+  margin-bottom: 20px;
   font-size: 38px;
   font-weight: 700;
-  margin-bottom: 20px;
 }
 
 .sobre > p {
-  font-size: 17px;
-  color: #b0c4de;
   max-width: 680px;
   margin: 0 auto 60px;
+  color: var(--cor-texto-sec);
+  font-size: 17px;
   line-height: 1.8;
 }
 
-/* ===== CARDS ===== */
+/* ============================================================
+   CARDS (pilares: Jogos / Experimentos / Teoria / Comunidade)
+============================================================ */
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -242,11 +292,11 @@ body {
 }
 
 .card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(0, 180, 255, 0.15);
-  border-radius: 16px;
   padding: 36px 28px;
-  transition: transform 0.3s, border-color 0.3s;
+  border: 1px solid var(--borda-marca-sutil);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  transition: transform var(--duracao-hover), border-color var(--duracao-hover);
 }
 
 .card:hover {
@@ -255,29 +305,31 @@ body {
 }
 
 .card-icon {
-  font-size: 40px;
   margin-bottom: 16px;
+  font-size: 40px;
 }
 
 .card h3 {
+  margin-bottom: 10px;
+  color: var(--cor-texto);
   font-size: 20px;
   font-weight: 600;
-  margin-bottom: 10px;
-  color: #ffffff;
 }
 
 .card p {
+  color: var(--cor-texto-sec);
   font-size: 14px;
-  color: #b0c4de;
   line-height: 1.6;
 }
 
-/* ===== FOOTER ===== */
+/* ============================================================
+   FOOTER
+============================================================ */
 .footer {
-  text-align: center;
   padding: 40px 60px;
-  border-top: 1px solid rgba(0, 180, 255, 0.1);
-  background: #080b15;
+  border-top: 1px solid var(--borda-marca-sutil);
+  background: var(--cor-bg-footer);
+  text-align: center;
 }
 
 .footer-logo {
@@ -287,78 +339,83 @@ body {
 }
 
 .footer p {
-  font-size: 13px;
   color: #5a6a85;
+  font-size: 13px;
 }
 
-/* Esconde hamburguer no desktop */
-.nav-hamburger { display: none; }
-
-/* ===== RESPONSIVO MOBILE ===== */
+/* ============================================================
+   RESPONSIVO — MOBILE (≤ 768px)
+   Troca a navbar horizontal por hamburguer + menu dropdown,
+   e reflui hero/cards para layout de coluna única.
+============================================================ */
 @media (max-width: 768px) {
 
-  /* NAVBAR */
+  /* --- Navbar --- */
   .navbar {
+    height: 64px;
     padding: 10px 20px;
     flex-wrap: nowrap;
-    justify-content: space-between;
-    height: 64px;
   }
 
-  .logo-img { height: 48px; }
+  .logo-img {
+    height: 48px;
+  }
 
-  /* Esconde links e botões no mobile */
-  .nav-links   { display: none; }
-  .nav-buttons { display: none; }
+  .nav-links,
+  .nav-buttons {
+    display: none; /* substituídos pelo menu mobile */
+  }
 
-  /* Botão hamburguer */
   .nav-hamburger {
     display: flex;
     flex-direction: column;
     gap: 5px;
-    cursor: pointer;
     padding: 6px;
+    cursor: pointer;
   }
 
   .nav-hamburger span {
     display: block;
     width: 24px;
     height: 2px;
-    background: #b0c4de;
     border-radius: 2px;
-    transition: all 0.3s;
+    background: var(--cor-texto-sec);
   }
 
-  /* Menu mobile — oculto por padrão, visível quando .aberto */
+  /* --- Menu mobile (dropdown) --- */
   .nav-mobile-menu {
+    display: none; /* alternado via JS adicionando/removendo .aberto */
     position: fixed;
     top: 64px;
     left: 0;
     right: 0;
-    background: rgba(10, 14, 26, 0.98);
-    border-bottom: 1px solid rgba(0,180,255,0.15);
+    z-index: 999;
     flex-direction: column;
     padding: 16px 0;
-    z-index: 999;
+    background: rgba(10, 14, 26, 0.98);
+    border-bottom: 1px solid var(--borda-marca-sutil);
     backdrop-filter: blur(10px);
-    display: none;
   }
 
+  /* !important necessário pois sobrescreve a regra `display: none`
+     acima, que tem a mesma especificidade dentro do media query. */
   .nav-mobile-menu.aberto {
     display: flex !important;
   }
 
   .nav-mobile-menu a {
+    padding: 14px 28px;
+    border-bottom: 1px solid rgba(0, 180, 255, 0.08);
+    color: var(--cor-texto-sec);
     text-decoration: none;
-    color: #b0c4de;
     font-size: 16px;
     font-weight: 500;
-    padding: 14px 28px;
-    border-bottom: 1px solid rgba(0,180,255,0.08);
     transition: color 0.2s;
   }
 
-  .nav-mobile-menu a:hover { color: #00b4ff; }
+  .nav-mobile-menu a:hover {
+    color: var(--cor-marca);
+  }
 
   .nav-mobile-menu .mobile-btns {
     display: flex;
@@ -372,66 +429,79 @@ body {
     text-align: center;
   }
 
-  /* HERO */
+  /* --- Hero --- */
   .hero {
-    flex-direction: column-reverse;
+    flex-direction: column-reverse; /* mascote acima do texto no mobile */
+    min-height: 100svh; /* svh evita salto de layout com a barra de UI do navegador mobile */
     padding: 90px 24px 50px;
     text-align: center;
-    min-height: 100svh;
   }
 
-  .hero-text { max-width: 100%; }
+  .hero-text {
+    max-width: 100%;
+  }
 
   .hero-text h1 {
-    font-size: 32px;
     margin-bottom: 14px;
+    font-size: 32px;
   }
 
   .subtitulo {
-    font-size: 15px;
     margin-bottom: 24px;
+    font-size: 15px;
   }
 
   .hero-mascote img {
-    width: 800px;
     margin-bottom: 10px;
   }
 
   .hero-btns {
-    justify-content: center;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
   }
 
-  .btn-primary, .btn-secondary {
+  .btn-primary,
+  .btn-secondary {
     width: 100%;
-    text-align: center;
     padding: 14px 20px;
+    text-align: center;
   }
 
-  /* SOBRE */
+  /* --- Sobre --- */
   .sobre {
     padding: 50px 20px;
   }
 
-  .sobre h2 { font-size: 26px; }
+  .sobre h2  { font-size: 26px; }
   .sobre > p { font-size: 15px; }
 
+  /* --- Cards: 4 colunas → 2 colunas --- */
   .cards {
     grid-template-columns: 1fr 1fr;
     gap: 14px;
   }
 
-  .card { padding: 22px 16px; }
-  .card-icon { font-size: 30px; }
-  .card h3 { font-size: 16px; }
-  .card p  { font-size: 12px; }
+  .card       { padding: 22px 16px; }
+  .card-icon  { font-size: 30px; }
+  .card h3    { font-size: 16px; }
+  .card p     { font-size: 12px; }
 
-  /* FOOTER */
-  .footer { padding: 30px 20px; }
+  /* --- Footer --- */
+  .footer {
+    padding: 30px 20px;
+  }
 }
 
+/* ============================================================
+   RESPONSIVO — TELAS MUITO PEQUENAS (≤ 400px)
+============================================================ */
 @media (max-width: 400px) {
-  .cards { grid-template-columns: 1fr; }
-  .hero-text h1 { font-size: 26px; }
+  .cards {
+    grid-template-columns: 1fr; /* 2 colunas → 1 coluna */
+  }
+
+  .hero-text h1 {
+    font-size: 26px;
+  }
 }

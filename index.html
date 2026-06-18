@@ -2,34 +2,51 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OMNIS - Integrated Educational Platform</title>
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
 
-  <!-- NAVBAR -->
+  <!-- ==========================================================
+       NAVBAR (DESKTOP)
+       Logo + links de navegação + botões de autenticação.
+       Em telas pequenas, .nav-links e .nav-buttons são ocultados
+       via CSS e substituídos pelo menu hamburguer abaixo.
+  =========================================================== -->
   <nav class="navbar">
+
     <div class="nav-logo">
-      <a href="index.html"><img src="assets/images/logo.png" alt="OMNIS Logo" class="logo-img" /></a>
+      <a href="index.html">
+        <img src="assets/images/logo.png" alt="OMNIS Logo" class="logo-img" />
+      </a>
     </div>
+
     <ul class="nav-links">
       <li><a href="pages/jogos.html">Jogos</a></li>
       <li><a href="pages/experimentos.html">Experimentos</a></li>
       <li><a href="pages/teoria.html">Teoria</a></li>
       <li><a href="pages/comunidade.html">Comunidade</a></li>
     </ul>
+
     <div class="nav-buttons">
       <a href="#" class="btn-login">Entrar</a>
       <a href="#" class="btn-cadastro">Cadastrar</a>
     </div>
-    <!-- Hamburguer mobile -->
-    <div class="nav-hamburger" onclick="toggleMenu()" id="hamburger">
+
+    <!-- Botão hamburguer: visível apenas em mobile (controlado via CSS) -->
+    <button class="nav-hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false">
       <span></span><span></span><span></span>
-    </div>
+    </button>
+
   </nav>
 
-  <!-- Menu mobile -->
+  <!-- ==========================================================
+       MENU MOBILE
+       Réplica dos links da navbar, exibida em tela cheia/dropdown
+       quando o hamburguer é acionado. Mantido fora da <nav> para
+       simplificar o posicionamento via CSS (position: fixed).
+  =========================================================== -->
   <div class="nav-mobile-menu" id="mobileMenu">
     <a href="pages/jogos.html">🎮 Jogos</a>
     <a href="pages/experimentos.html">🔬 Experimentos</a>
@@ -41,25 +58,46 @@
     </div>
   </div>
 
-  <!-- HERO SECTION -->
+  <!-- ==========================================================
+       HERO
+       Primeira seção visível — chamada principal + mascote.
+  =========================================================== -->
   <section class="hero">
+
     <div class="hero-text">
       <h1>Bem-vindo à <span class="destaque">OMNIS</span></h1>
-      <p class="subtitulo">A plataforma educacional que reúne <strong>tudo</strong> em um só lugar. Videoaulas, experimentos remotos, jogos educativos e uma comunidade incrível esperando por você.</p>
+      <p class="subtitulo">
+        A plataforma educacional que reúne <strong>tudo</strong> em um só lugar.
+        Videoaulas, experimentos remotos, jogos educativos e uma comunidade
+        incrível esperando por você.
+      </p>
       <div class="hero-btns">
         <a href="#" class="btn-primary">Começar agora</a>
         <a href="#sobre" class="btn-secondary">Saiba mais</a>
       </div>
     </div>
+
     <div class="hero-mascote">
       <img src="assets/images/mascote.png" alt="OMNI - Mascote da OMNIS" />
     </div>
+
   </section>
 
-  <!-- SOBRE -->
+  <!-- ==========================================================
+       SOBRE
+       Explica a proposta da plataforma através de 4 pilares,
+       cada um espelhando uma aba da navbar.
+  =========================================================== -->
   <section class="sobre" id="sobre">
+
     <h2>O que é a <span class="destaque">OMNIS</span>?</h2>
-    <p>OMNIS é uma plataforma educacional integrada que conecta alunos ao conhecimento de forma dinâmica e inovadora. Aqui você aprende com vídeos, experimenta na prática, evolui com jogos e compartilha com a comunidade.</p>
+    <p>
+      OMNIS é uma plataforma educacional integrada que conecta alunos ao
+      conhecimento de forma dinâmica e inovadora. Aqui você aprende com
+      vídeos, experimenta na prática, evolui com jogos e compartilha com
+      a comunidade.
+    </p>
+
     <div class="cards">
       <div class="card">
         <div class="card-icon">🎮</div>
@@ -82,48 +120,85 @@
         <p>Conecte-se com outros alunos, tire dúvidas e compartilhe conhecimento.</p>
       </div>
     </div>
+
   </section>
 
-  <!-- FOOTER -->
+  <!-- ==========================================================
+       FOOTER
+  =========================================================== -->
   <footer class="footer">
     <img src="assets/images/logo.png" alt="OMNIS" class="footer-logo" />
     <p>© 2025 OMNIS - Integrated Educational Platform. Todos os direitos reservados.</p>
   </footer>
 
   <script src="assets/js/script.js"></script>
+
+  <!--
+    Script inline mínimo, específico desta página (toggle de menu
+    e transição de saída). Lógica reutilizável entre páginas vive
+    em assets/js/script.js; o que está aqui é só "cola" de UI.
+  -->
   <script>
-    // Menu hamburguer mobile
-    function toggleMenu() {
-      document.getElementById('mobileMenu').classList.toggle('aberto');
-    }
+    (function () {
+      'use strict';
 
-    // Fecha menu ao clicar em link
-    document.querySelectorAll('.nav-mobile-menu a').forEach(link => {
-      link.addEventListener('click', function() {
-        const href = this.getAttribute('href');
-        document.getElementById('mobileMenu').classList.remove('aberto');
-        if (href && href !== '#') {
-          document.body.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-          document.body.style.opacity = '0';
-          document.body.style.transform = 'translateY(-20px)';
-          setTimeout(() => { window.location.href = href; }, 400);
-        }
-      });
-    });
+      // --------------------------------------------------------
+      // Referências de elementos usadas em todo o script.
+      // --------------------------------------------------------
+      const hamburger  = document.getElementById('hamburger');
+      const mobileMenu = document.getElementById('mobileMenu');
 
-    // Animação de saída ao navegar pelo menu desktop
-    document.querySelectorAll('.nav-links a').forEach(link => {
-      link.addEventListener('click', function(e) {
-        const href = this.getAttribute('href');
-        if (href && href !== '#') {
-          e.preventDefault();
-          document.body.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-          document.body.style.opacity = '0';
-          document.body.style.transform = 'translateY(-20px)';
-          setTimeout(() => { window.location.href = href; }, 400);
-        }
-      });
-    });
+      // --------------------------------------------------------
+      // Alterna a visibilidade do menu mobile.
+      // Sincroniza aria-expanded para leitores de tela.
+      // --------------------------------------------------------
+      function toggleMenu() {
+        const isOpen = mobileMenu.classList.toggle('aberto');
+        hamburger.setAttribute('aria-expanded', String(isOpen));
+      }
+
+      // --------------------------------------------------------
+      // Navega para `href` com uma transição de fade/slide,
+      // em vez de trocar de página instantaneamente.
+      //
+      // `href` vazio, ausente ou "#" é ignorado — usado para
+      // links placeholder (ex: "Entrar"/"Cadastrar" ainda sem
+      // destino definido).
+      // --------------------------------------------------------
+      function navegarComTransicao(href) {
+        if (!href || href === '#') return;
+
+        document.body.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        document.body.style.opacity    = '0';
+        document.body.style.transform  = 'translateY(-20px)';
+
+        setTimeout(() => { window.location.href = href; }, 400);
+      }
+
+      // --------------------------------------------------------
+      // Eventos
+      // --------------------------------------------------------
+      hamburger.addEventListener('click', toggleMenu);
+
+      // Um único listener delegado cobre tanto a navbar desktop
+      // quanto o menu mobile — evita duplicar a mesma lógica
+      // de transição em dois lugares.
+      document
+        .querySelectorAll('.nav-links a, .nav-mobile-menu a')
+        .forEach((link) => {
+          link.addEventListener('click', (event) => {
+            mobileMenu.classList.remove('aberto');
+
+            const href = link.getAttribute('href');
+            if (href && href !== '#') {
+              event.preventDefault();
+              navegarComTransicao(href);
+            }
+          });
+        });
+
+    })();
   </script>
+
 </body>
 </html>
