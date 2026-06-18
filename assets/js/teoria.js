@@ -1,103 +1,161 @@
-// =====================================================================
-// teoria.js — Puxe dados do JSON no GitHub OMNIS-ACADEMY
-// =====================================================================
+// ============================================================
+// OMNIS — teoria.js
+// Busca a lista de matérias/tópicos em um JSON hospedado no
+// repositório OMNIS-ACADEMY e renderiza as abas + cards.
+//
+// O conteúdo é editado direto no JSON (sem precisar tocar neste
+// arquivo ou fazer deploy do site) — ver estrutura esperada em
+// JSON_URL.
+// ============================================================
 
-const JSON_URL = 'https://raw.githubusercontent.com/labremotodeivid-coder/OMNIS-ACADEMY/main/teoria_lista.json';
+(function () {
+  'use strict';
 
-let materias     = [];
-let materiaAtiva = 0;
+  const JSON_URL = 'https://raw.githubusercontent.com/labremotodeivid-coder/OMNIS-ACADEMY/main/teoria_lista.json';
 
-// ── Init ──────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', carregarTeoria);
+  const elTabs     = document.getElementById('materiasTabs');
+  const elTopicos  = document.getElementById('topicosContainer');
 
-// =====================================================================
-// CARREGAR JSON DO GITHUB
-// =====================================================================
-async function carregarTeoria() {
-  try {
-    const res  = await fetch(JSON_URL);
-    const data = await res.json();
-    materias   = data.materias;
-    renderTabs();
-    mostrarMateria(0);
-  } catch (e) {
-    document.getElementById('materiasTabs').innerHTML =
-      '<p style="color:#f87171;text-align:center">Erro ao carregar conteúdo. Verifique sua conexão.</p>';
+  /** Lista de matérias carregada do JSON. Populada por carregarTeoria(). */
+  let materias = [];
+
+  // --------------------------------------------------------
+  // Carregamento inicial
+  // --------------------------------------------------------
+  document.addEventListener('DOMContentLoaded', carregarTeoria);
+
+  async function carregarTeoria() {
+    try {
+      const resposta = await fetch(JSON_URL);
+
+      // fetch() só rejeita em falha de rede — uma resposta 404/500
+      // chega aqui como "sucesso" com res.ok === false, então essa
+      // checagem é necessária para não tentar parsear um erro como JSON.
+      if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
+
+      const dados = await resposta.json();
+      materias = dados.materias;
+
+      renderizarAbas();
+      mostrarMateria(0);
+    } catch (erro) {
+      elTabs.innerHTML = '<p class="erro-carregamento">Erro ao carregar conteúdo. Verifique sua conexão.</p>';
+    }
   }
-}
 
-// =====================================================================
-// RENDER DAS ABAS
-// =====================================================================
-function renderTabs() {
-  const tabs = document.getElementById('materiasTabs');
-  tabs.innerHTML = materias.map((m, i) => `
-    <button
-      class="tab-btn ${i === 0 ? 'ativo' : ''}"
-      onclick="mostrarMateria(${i})"
-      id="tab-${i}"
-      style="--cor-materia: ${m.cor}"
-    >
-      ${m.icone} ${m.nome}
-    </button>
-  `).join('');
-}
+  // --------------------------------------------------------
+  // Renderização
+  // --------------------------------------------------------
 
-// =====================================================================
-// MOSTRAR TÓPICOS DA MATÉRIA
-// =====================================================================
-function mostrarMateria(idx) {
-  materiaAtiva = idx;
-  const materia = materias[idx];
+  function renderizarAbas() {
+    elTabs.innerHTML = materias
+      .map((materia, indice) => `
+        <button
+          class="tab-btn ${indice === 0 ? 'ativo' : ''}"
+          style="--cor-materia: ${materia.cor}"
+          data-indice="${indice}"
+        >
+          ${materia.icone} ${materia.nome}
+        </button>
+      `)
+      .join('');
 
-  // Atualiza tabs
-  document.querySelectorAll('.tab-btn').forEach((b, i) => {
-    b.classList.toggle('ativo', i === idx);
-  });
+    // Delegação de evento única para todas as abas, em vez de um
+    // onclick inline por botão — também evita reconstruir listeners
+    // se as abas forem re-renderizadas no futuro.
+    elTabs.querySelectorAll('.tab-btn').forEach((botao) => {
+      botao.addEventListener('click', () => {
+        mostrarMateria(Number(botao.dataset.indice));
+      });
+    });
+  }
 
-  // Renderiza cards
-  const container = document.getElementById('topicosContainer');
-  container.innerHTML = `
-    <div class="cards-teoria" id="cardsTeoria">
-      ${materia.topicos.map(t => `
-        <div class="card-teoria" onclick="abrirTopico('${materia.id}','${t.id}','${materia.cor}','${materia.icone}','${materia.nome}','${t.titulo}')" style="--cor-materia: ${materia.cor}">
-          <div class="card-teoria-img">
-            <img src="${t.imagem}" alt="${t.titulo}"
-              onerror="this.style.display='none';this.parentElement.classList.add('sem-imagem')" />
-            <div class="card-teoria-overlay">
-              <span>Ver conteúdo →</span>
-            </div>
-          </div>
-          <div class="card-teoria-body">
-            <h3>${t.titulo}</h3>
-            <p>${t.descricao}</p>
-            <a class="btn-card" onclick="event.stopPropagation();abrirTopico('${materia.id}','${t.id}','${materia.cor}','${materia.icone}','${materia.nome}','${t.titulo}')">Acessar</a>
+  function mostrarMateria(indice) {
+    const materia = materias[indice];
+
+    elTabs.querySelectorAll('.tab-btn').forEach((botao, i) => {
+      botao.classList.toggle('ativo', i === indice);
+    });
+
+    elTopicos.innerHTML = `
+      <div class="cards-teoria" id="cardsTeoria">
+        ${materia.topicos.map((topico) => renderizarCard(materia, topico)).join('')}
+      </div>
+    `;
+
+    // Liga os cliques via JS (não onclick inline) — assim os dados
+    // do tópico não precisam ser serializados dentro de atributos
+    // HTML, o que evitaria problemas com aspas/acentos em títulos.
+    ligarCliquesDosCards(materia);
+
+    // Pequeno delay antes de adicionar a classe que dispara a
+    // transição de fade-in via CSS (ver .cards-teoria.visivel).
+    requestAnimationFrame(() => {
+      document.getElementById('cardsTeoria')?.classList.add('visivel');
+    });
+  }
+
+  function renderizarCard(materia, topico) {
+    return `
+      <div class="card-teoria" style="--cor-materia: ${materia.cor}" data-topico-id="${topico.id}">
+        <div class="card-teoria-img">
+          <img
+            src="${topico.imagem}"
+            alt="${topico.titulo}"
+            onerror="this.style.display='none'; this.parentElement.classList.add('sem-imagem')"
+          />
+          <div class="card-teoria-overlay">
+            <span>Ver conteúdo →</span>
           </div>
         </div>
-      `).join('')}
-    </div>
-  `;
+        <div class="card-teoria-body">
+          <h3>${topico.titulo}</h3>
+          <p>${topico.descricao}</p>
+          <a class="btn-card" data-topico-id="${topico.id}">Acessar</a>
+        </div>
+      </div>
+    `;
+  }
 
-  // Animação de entrada
-  setTimeout(() => {
-    document.getElementById('cardsTeoria')?.classList.add('visivel');
-  }, 10);
-}
+  /**
+   * Liga o clique do card inteiro e do botão "Acessar" à navegação
+   * para materia.html, usando os dados de `materia` (já em memória)
+   * em vez de reconstruí-los a partir de atributos HTML.
+   */
+  function ligarCliquesDosCards(materia) {
+    const irParaTopico = (topicoId) => {
+      const topico = materia.topicos.find((t) => t.id === topicoId);
+      if (topico) abrirTopico(materia, topico);
+    };
 
-// =====================================================================
-// ABRIR TÓPICO — navega para materia.html com parâmetros
-// =====================================================================
-function abrirTopico(materiaId, topicoId, cor, icone, materiaNome, topicoNome) {
-  const params = new URLSearchParams({
-    materia: materiaNome,
-    topico:  topicoNome,
-    cor:     cor,
-    icone:   icone,
-  });
-  document.body.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-  document.body.style.opacity    = '0';
-  document.body.style.transform  = 'translateY(-20px)';
-  setTimeout(() => {
-    window.location.href = `materia.html?${params.toString()}`;
-  }, 400);
-}
+    elTopicos.querySelectorAll('.card-teoria').forEach((card) => {
+      card.addEventListener('click', () => irParaTopico(card.dataset.topicoId));
+    });
+
+    // O botão "Acessar" fica dentro do card clicável — precisa
+    // impedir a propagação para não disparar o clique do card pai
+    // junto, o que abriria a navegação duas vezes em sequência.
+    elTopicos.querySelectorAll('.btn-card').forEach((botao) => {
+      botao.addEventListener('click', (evento) => {
+        evento.stopPropagation();
+        irParaTopico(botao.dataset.topicoId);
+      });
+    });
+  }
+
+  // --------------------------------------------------------
+  // Navegação para a página de matéria
+  // --------------------------------------------------------
+
+  function abrirTopico(materia, topico) {
+    const params = new URLSearchParams({
+      materia: materia.nome,
+      topico:  topico.titulo,
+      cor:     materia.cor,
+      icone:   materia.icone,
+    });
+
+    window.OmnisUI.navegarComTransicao(`materia.html?${params.toString()}`);
+  }
+
+})();

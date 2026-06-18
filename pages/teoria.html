@@ -2,34 +2,44 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OMNIS - Teoria</title>
   <link rel="stylesheet" href="../assets/css/style.css" />
   <link rel="stylesheet" href="../assets/css/teoria.css" />
 </head>
 <body>
 
-  <!-- NAVBAR -->
+  <!-- ==========================================================
+       NAVBAR + MENU MOBILE
+       Idêntica em estrutura à da home; o toggle do hamburguer e
+       a transição de saída ao clicar nos links são tratados de
+       forma genérica em assets/js/script.js (não há JS inline
+       nesta página para essa parte).
+  =========================================================== -->
   <nav class="navbar">
     <div class="nav-logo">
-      <a href="../index.html"><img src="../assets/images/logo.png" alt="OMNIS Logo" class="logo-img" /></a>
+      <a href="../index.html">
+        <img src="../assets/images/logo.png" alt="OMNIS Logo" class="logo-img" />
+      </a>
     </div>
+
     <ul class="nav-links">
       <li><a href="jogos.html">Jogos</a></li>
       <li><a href="experimentos.html">Experimentos</a></li>
       <li><a href="teoria.html" class="ativo">Teoria</a></li>
       <li><a href="comunidade.html">Comunidade</a></li>
     </ul>
+
     <div class="nav-buttons">
       <a href="#" class="btn-login">Entrar</a>
       <a href="#" class="btn-cadastro">Cadastrar</a>
     </div>
-    <div class="nav-hamburger" onclick="toggleMenu()" id="hamburger">
+
+    <button class="nav-hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false">
       <span></span><span></span><span></span>
-    </div>
+    </button>
   </nav>
 
-  <!-- Menu mobile -->
   <div class="nav-mobile-menu" id="mobileMenu">
     <a href="jogos.html">🎮 Jogos</a>
     <a href="experimentos.html">🔬 Experimentos</a>
@@ -41,23 +51,31 @@
     </div>
   </div>
 
-  <!-- HEADER -->
+  <!-- ==========================================================
+       HEADER DA PÁGINA
+  =========================================================== -->
   <section class="teoria-header">
     <h1>📚 Teoria</h1>
     <p>Escolha uma matéria e explore os conteúdos</p>
   </section>
 
-  <!-- ABAS E CARDS — gerados via JS -->
+  <!-- ==========================================================
+       ABAS DE MATÉRIA + CARDS DE TÓPICO
+       Ambos os containers começam vazios e são populados pelo
+       teoria.js após o fetch do JSON em OMNIS-ACADEMY. O estado
+       de "carregando" abaixo é o que aparece antes da 1ª resposta.
+  =========================================================== -->
   <section class="teoria-container">
-    <!-- Tabs das matérias -->
     <div class="materias-tabs" id="materiasTabs">
-      <div class="tab-loading">Carregando matérias...</div>
+      <p class="tab-loading">Carregando matérias...</p>
     </div>
-    <!-- Cards dos tópicos -->
+
     <div id="topicosContainer"></div>
   </section>
 
-  <!-- FOOTER -->
+  <!-- ==========================================================
+       FOOTER
+  =========================================================== -->
   <footer class="footer">
     <img src="../assets/images/logo.png" alt="OMNIS" class="footer-logo" />
     <p>© 2025 OMNIS - Integrated Educational Platform. Todos os direitos reservados.</p>
@@ -65,23 +83,6 @@
 
   <script src="../assets/js/script.js"></script>
   <script src="../assets/js/teoria.js"></script>
-  <script>
-    function toggleMenu() {
-      document.getElementById('mobileMenu').classList.toggle('aberto');
-    }
-    document.querySelectorAll('.nav-mobile-menu a, .nav-links a').forEach(link => {
-      link.addEventListener('click', function(e) {
-        document.getElementById('mobileMenu').classList.remove('aberto');
-        const href = this.getAttribute('href');
-        if (href && href !== '#') {
-          e.preventDefault();
-          document.body.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-          document.body.style.opacity = '0';
-          document.body.style.transform = 'translateY(-20px)';
-          setTimeout(() => { window.location.href = href; }, 400);
-        }
-      });
-    });
-  </script>
+
 </body>
 </html>

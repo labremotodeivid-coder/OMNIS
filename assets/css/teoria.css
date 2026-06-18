@@ -1,76 +1,111 @@
-/* ===== TEORIA PAGE ===== */
+/* ============================================================
+   OMNIS — teoria.css
+   Página de listagem de matérias (abas) e tópicos (cards).
+   Reaproveita as variáveis globais de --cor-marca etc definidas
+   em style.css; --cor-materia é local, definida inline por
+   teoria.js de acordo com a cor de cada matéria no JSON.
+============================================================ */
 
 body {
-  animation: paginaEntrar 0.6s ease forwards;
+  animation: pagina-entrar 0.6s ease forwards;
 }
 
-@keyframes paginaEntrar {
-  from { opacity:0; transform:translateY(20px); }
-  to   { opacity:1; transform:translateY(0); }
+@keyframes pagina-entrar {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
+/* ============================================================
+   HEADER
+============================================================ */
 .teoria-header {
   padding: 120px 60px 40px;
   text-align: center;
-  background: radial-gradient(ellipse at top, rgba(0,100,255,0.1) 0%, transparent 60%), #0a0e1a;
+  background:
+    radial-gradient(ellipse at top, rgba(0, 100, 255, 0.1) 0%, transparent 60%),
+    var(--cor-bg);
 }
 
-.teoria-header h1 { font-size: 42px; font-weight: 700; margin-bottom: 10px; }
-.teoria-header p  { font-size: 17px; color: #b0c4de; }
+.teoria-header h1 {
+  margin-bottom: 10px;
+  font-size: 42px;
+  font-weight: 700;
+}
 
-/* ===== CONTAINER ===== */
+.teoria-header p {
+  color: var(--cor-texto-sec);
+  font-size: 17px;
+}
+
+/* ============================================================
+   CONTAINER GERAL
+============================================================ */
 .teoria-container {
-  padding: 40px 60px 80px;
   max-width: 1300px;
   margin: 0 auto;
+  padding: 40px 60px 80px;
 }
 
-/* ===== TABS ===== */
+/* ============================================================
+   ABAS DE MATÉRIA
+============================================================ */
 .materias-tabs {
   display: flex;
-  gap: 10px;
-  margin-bottom: 40px;
   flex-wrap: wrap;
   justify-content: center;
+  gap: 10px;
+  margin-bottom: 40px;
 }
 
-.tab-loading {
-  color: #b0c4de;
-  font-size: 15px;
+.tab-loading,
+.erro-carregamento {
   padding: 20px;
+  font-size: 15px;
+  text-align: center;
 }
+
+.tab-loading        { color: var(--cor-texto-sec); }
+.erro-carregamento  { color: #f87171; } /* vermelho — feedback de falha de rede */
 
 .tab-btn {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: #b0c4de;
   padding: 10px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 50px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--cor-texto-sec);
   font-size: 14px;
   font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s;
   white-space: nowrap;
+  cursor: pointer;
+  transition: all var(--duracao-hover);
 }
 
+/* --cor-materia é definida inline por elemento (style="--cor-materia: ...")
+   refletindo a cor de cada matéria no JSON; o fallback #00b4ff cobre
+   o caso de a variável ainda não ter sido aplicada. */
 .tab-btn:hover {
-  border-color: var(--cor-materia, #00b4ff);
-  color: var(--cor-materia, #00b4ff);
+  border-color: var(--cor-materia, var(--cor-marca));
+  color: var(--cor-materia, var(--cor-marca));
 }
 
 .tab-btn.ativo {
-  background: var(--cor-materia, #00b4ff);
   border-color: transparent;
+  background: var(--cor-materia, var(--cor-marca));
   color: #fff;
   font-weight: 700;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* ===== CARDS ===== */
+/* ============================================================
+   GRID DE CARDS
+============================================================ */
 .cards-teoria {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 20px;
+
+  /* Estado inicial oculto — a classe .visivel (adicionada via JS
+     após o render) dispara o fade-in/slide-up abaixo. */
   opacity: 0;
   transform: translateY(10px);
   transition: opacity 0.4s ease, transform 0.4s ease;
@@ -82,27 +117,27 @@ body {
 }
 
 .card-teoria {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 16px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: transform var(--duracao-hover), border-color var(--duracao-hover), box-shadow var(--duracao-hover);
 }
 
 .card-teoria:hover {
   transform: translateY(-6px);
-  border-color: var(--cor-materia, rgba(0,180,255,0.5));
-  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  border-color: var(--cor-materia, rgba(0, 180, 255, 0.5));
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
 }
 
-/* Imagem do card */
+/* --- Imagem do card --- */
 .card-teoria-img {
   position: relative;
   height: 160px;
-  background: rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0.05);
   overflow: hidden;
 }
 
@@ -110,13 +145,15 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s;
+  transition: transform var(--duracao-hover);
 }
 
 .card-teoria:hover .card-teoria-img img {
   transform: scale(1.05);
 }
 
+/* Aplicada via JS (onerror da <img>) quando a imagem do tópico
+   falha ao carregar — mostra um placeholder com ícone genérico. */
 .card-teoria-img.sem-imagem {
   display: flex;
   align-items: center;
@@ -124,16 +161,15 @@ body {
   font-size: 48px;
 }
 
-/* Overlay ao hover */
 .card-teoria-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.5);
   display: flex;
   align-items: center;
   justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity var(--duracao-hover);
 }
 
 .card-teoria:hover .card-teoria-overlay {
@@ -141,60 +177,90 @@ body {
 }
 
 .card-teoria-overlay span {
+  padding: 8px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
   color: #fff;
   font-size: 14px;
   font-weight: 600;
-  border: 1px solid rgba(255,255,255,0.5);
-  padding: 8px 18px;
-  border-radius: 8px;
 }
 
-/* Body do card */
+/* --- Corpo do card --- */
 .card-teoria-body {
-  padding: 16px;
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 8px;
-  flex: 1;
+  padding: 16px;
 }
 
 .card-teoria-body h3 {
+  color: #fff;
   font-size: 15px;
   font-weight: 700;
-  color: #fff;
 }
 
 .card-teoria-body p {
-  font-size: 13px;
-  color: #b0c4de;
-  line-height: 1.5;
   flex: 1;
+  color: var(--cor-texto-sec);
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .btn-card {
-  text-decoration: none;
-  background: var(--cor-materia, linear-gradient(135deg, #00b4ff, #7b2fff));
-  color: #fff;
+  align-self: flex-start;
   padding: 8px 16px;
   border-radius: 8px;
+  background: var(--cor-materia, var(--gradiente-marca));
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
   font-size: 12px;
   font-weight: 700;
-  text-align: center;
-  transition: opacity 0.3s;
-  align-self: flex-start;
+  transition: opacity var(--duracao-hover);
 }
 
-.btn-card:hover { opacity: 0.85; }
+.btn-card:hover {
+  opacity: 0.85;
+}
 
-/* ===== ABA ATIVA NA NAVBAR ===== */
-.nav-links a.ativo { color: #00b4ff; }
+/* ============================================================
+   AGRUPAMENTO COM A NAVBAR
+   Garante que o link "Teoria" apareça destacado na navbar
+   enquanto o usuário está nesta página (classe aplicada
+   diretamente no <a> do HTML, não via JS).
+============================================================ */
+.nav-links a.ativo {
+  color: var(--cor-marca);
+}
 
-/* ===== RESPONSIVO ===== */
+/* ============================================================
+   RESPONSIVO (≤ 768px)
+============================================================ */
 @media (max-width: 768px) {
-  .teoria-header { padding: 100px 20px 30px; }
-  .teoria-container { padding: 24px 16px 60px; }
-  .teoria-header h1 { font-size: 28px; }
-  .tab-btn { padding: 8px 16px; font-size: 13px; }
-  .cards-teoria { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
-  .card-teoria-img { height: 120px; }
+  .teoria-header {
+    padding: 100px 20px 30px;
+  }
+
+  .teoria-header h1 {
+    font-size: 28px;
+  }
+
+  .teoria-container {
+    padding: 24px 16px 60px;
+  }
+
+  .tab-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  .cards-teoria {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
+  }
+
+  .card-teoria-img {
+    height: 120px;
+  }
 }
