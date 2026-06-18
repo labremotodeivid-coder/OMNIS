@@ -60,17 +60,19 @@ body {
 .navbar {
   position: fixed;
   top: 0;
+  left: 0;
   width: 100%;
-  z-index: 1000;
+  z-index: 9999;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 10px 50px;
 
-  background: rgba(10, 14, 26, 0.95);
+  background: #0a0e1a;
   border-bottom: 1px solid var(--borda-marca-sutil);
-  backdrop-filter: blur(10px);
+
+  backdrop-filter: none;
 }
 
 .logo-img {
@@ -159,14 +161,17 @@ body {
 .hero {
   position: relative;
   min-height: 100vh;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   gap: 40px;
-  padding: 120px 60px 60px;
+
+  padding: 170px 60px 60px;
+
   background: url('../images/fundo.png') center center / cover no-repeat;
 }
-
 /* Camada escura semi-transparente sobre o fundo — garante contraste
    suficiente para o texto independente do brilho da imagem. */
 .hero::before {
