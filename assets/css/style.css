@@ -160,6 +160,13 @@ body {
   display: none;
 }
 
+/* Menu mobile — oculto por padrão em todas as telas.
+   O JS adiciona .aberto para exibir; o CSS do media query
+   garante que só apareça no mobile. */
+.nav-mobile-menu {
+  display: none;
+}
+
 /* ============================================================
    HERO
    Seção de abertura com imagem de fundo, overlay escuro para
