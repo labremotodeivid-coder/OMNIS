@@ -60,19 +60,19 @@ body {
 .navbar {
   position: fixed;
   top: 0;
+  left: 0;
   width: 100%;
-  z-index: 1000;
+  z-index: 9999;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 10px 50px;
-  min-height: 80px; /* garante que a navbar contenha a logo de 70px sem transbordar */
 
-  background: rgba(10, 14, 26, 0.95);
+  background: #0a0e1a;
   border-bottom: 1px solid var(--borda-marca-sutil);
-  backdrop-filter: blur(10px);
-  transition: background var(--duracao-hover);
+
+  backdrop-filter: none;
 }
 
 /* Aplicada via JS (script.js) quando a página é rolada além do
@@ -182,7 +182,6 @@ body {
   padding: 120px 60px 60px;
   background: url('../images/fundo.png') center center / cover no-repeat;
 }
-
 /* Camada escura semi-transparente sobre o fundo — garante contraste
    suficiente para o texto independente do brilho da imagem. */
 .hero::before {
