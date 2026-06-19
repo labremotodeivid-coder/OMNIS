@@ -153,6 +153,7 @@
       topico:  topico.titulo,
       cor:     materia.cor,
       icone:   materia.icone,
+      capa:    topico.imagem, // mesma imagem já usada no card da listagem — reaproveitada como banner do header
     });
 
     window.OmnisUI.navegarComTransicao(`materia.html?${params.toString()}`);

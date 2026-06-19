@@ -22,6 +22,7 @@ body {
    HEADER DA MATÉRIA
 ============================================================ */
 .materia-header {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -29,6 +30,20 @@ body {
   background:
     linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2)),
     radial-gradient(ellipse at top, var(--cor-materia, #42A5F5) 0%, transparent 60%);
+  overflow: hidden; /* contém a imagem de capa dentro dos limites arredondados/da seção */
+}
+
+/* Quando o tópico tem imagem de capa (materia.js define --imagem-capa
+   e adiciona esta classe), ela some por baixo do gradiente acima como
+   um banner — em vez do fundo ser só a cor radial da matéria. */
+.materia-header--com-capa::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(10, 14, 26, 0.55) 0%, rgba(10, 14, 26, 0.92) 100%),
+    var(--imagem-capa) center center / cover no-repeat;
 }
 
 .btn-voltar {

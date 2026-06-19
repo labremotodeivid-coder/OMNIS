@@ -22,6 +22,7 @@
   const PASTA   = params.get('pasta')   || TOPICO; // nome da pasta no GitHub (pode diferir do título exibido)
   const COR     = params.get('cor')     || '#42A5F5';
   const ICONE   = params.get('icone')   || '⚛️';
+  const CAPA    = params.get('capa')    || ''; // imagem de capa do tópico, usada como banner do header
 
   // Cache simples em memória: evita refazer fetch/parse ao
   // alternar de volta para uma aba já visitada nesta sessão.
@@ -55,7 +56,17 @@
     document.getElementById('materiaNome').textContent       = MATERIA;
     document.getElementById('materiaIcone').textContent      = ICONE;
     document.getElementById('materiaTopicoNome').textContent = TOPICO;
-    document.getElementById('materiaHeader').style.setProperty('--cor-materia', COR);
+
+    const header = document.getElementById('materiaHeader');
+    header.style.setProperty('--cor-materia', COR);
+
+    // Banner de capa é opcional — se a URL não trouxe uma imagem,
+    // o header cai de volta no fundo de gradiente padrão (definido
+    // em materia.css), sem deixar um espaço vazio ou erro de imagem.
+    if (CAPA) {
+      header.style.setProperty('--imagem-capa', `url('${CAPA}')`);
+      header.classList.add('materia-header--com-capa');
+    }
 
     document.querySelectorAll('.aba-btn').forEach((botao) => {
       botao.style.setProperty('--cor-materia', COR);
