@@ -35,14 +35,20 @@ body {
 
 /* Quando o tópico tem imagem de capa (materia.js define --imagem-capa
    e adiciona esta classe), ela some por baixo do gradiente acima como
-   um banner — em vez do fundo ser só a cor radial da matéria. */
+   um banner — em vez do fundo ser só a cor radial da matéria.
+   Altura limitada a 220px: muitas imagens de capa hoje vêm pequenas
+   (ícones do Wikipedia), e cobrir toda a altura do header (que cresce
+   com o texto) forçaria um zoom exagerado nelas. */
 .materia-header--com-capa::before {
   content: '';
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 220px;
   z-index: -1;
   background:
-    linear-gradient(180deg, rgba(10, 14, 26, 0.55) 0%, rgba(10, 14, 26, 0.92) 100%),
+    linear-gradient(180deg, rgba(10, 14, 26, 0.35) 0%, rgba(10, 14, 26, 0.95) 100%),
     var(--imagem-capa) center center / cover no-repeat;
 }
 
