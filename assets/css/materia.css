@@ -371,6 +371,14 @@ body {
   gap: 24px;
 }
 
+/* Título do capítulo exibido acima da lista de subtópicos
+   (ex: "Capítulo 1") ao navegar Módulos > Capítulo. */
+.subtopicos-titulo {
+  color: #fff;
+  font-size: 22px;
+  font-weight: 800;
+}
+
 .btn-voltar-modulo {
   width: fit-content;
   padding: 8px 16px;

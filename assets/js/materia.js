@@ -19,6 +19,7 @@
   const params  = new URLSearchParams(window.location.search);
   const MATERIA = params.get('materia') || 'Física';
   const TOPICO  = params.get('topico')  || 'Mecânica';
+  const PASTA   = params.get('pasta')   || TOPICO; // nome da pasta no GitHub (pode diferir do título exibido)
   const COR     = params.get('cor')     || '#42A5F5';
   const ICONE   = params.get('icone')   || '⚛️';
 
@@ -30,11 +31,12 @@
 
   /**
    * Monta a URL de um arquivo dentro da pasta da matéria/tópico atual.
-   * encodeURIComponent é necessário porque os nomes das pastas no
-   * GitHub têm acentos (ex: "Mecânica", "introdução").
+   * Usa PASTA (nome real da pasta no GitHub) em vez de TOPICO (título
+   * exibido na tela) — os dois podem ser diferentes, ex: título
+   * "Mecânica Quântica" mas pasta "Quântica".
    */
   function path(pasta, arquivo) {
-    return `${REPO}/${encodeURIComponent(MATERIA)}/${encodeURIComponent(TOPICO)}/${pasta}/${arquivo}`;
+    return `${REPO}/${encodeURIComponent(MATERIA)}/${encodeURIComponent(PASTA)}/${pasta}/${arquivo}`;
   }
 
   // --------------------------------------------------------
@@ -116,25 +118,104 @@
   }
 
   // --------------------------------------------------------
-  // ABA: Módulos (capítulos de teoria)
+  // ABA: Módulos (capítulos de teoria, cada um com subtópicos)
+  //
+  // Estrutura no GitHub: teoria/Cap1/subt1.md, teoria/Cap1/subt2.md,
+  // teoria/Cap2/subt1.md... Não há como "listar" uma pasta via
+  // raw.githubusercontent.com, então a existência de cada capítulo/
+  // subtópico é descoberta tentando buscar subt1, subt2... até
+  // receber 404 — mesma técnica usada nos outros loops numerados
+  // deste arquivo (ver carregarSequenciaNumerada).
   // --------------------------------------------------------
   async function carregarModulos() {
-    const capitulos = await carregarSequenciaNumerada('teoria', 'Cap');
+    const capitulos = await descobrirCapitulosComSubtopicos();
     if (capitulos.length === 0) return mostrarErro('Nenhum módulo encontrado.');
 
     cache.capitulos = capitulos;
-    elConteudo.innerHTML = renderizarListaDeItens(capitulos, 'Cap', 'Clique para ler →');
-    ligarCliquesNaLista('.modulo-card', capitulos, abrirModulo);
+    elConteudo.innerHTML = renderizarListaDeItens(capitulos, 'Cap', 'Clique para ver os tópicos →');
+    ligarCliquesNaLista('.modulo-card', capitulos, abrirCapitulo);
   }
 
-  function abrirModulo(capitulo) {
+  /**
+   * Descobre quais capítulos existem e, para cada um, quantos
+   * subtópicos ele tem — sem nunca carregar o conteúdo (.md) em si,
+   * só confirmando existência. O conteúdo de cada subtópico só é
+   * buscado quando o usuário efetivamente clica nele.
+   *
+   * Os títulos exibidos para cada capítulo vêm de teoria/capitulos.json
+   * (ex: {"numero": 1, "titulo": "Princípios da Mecânica Quântica"}).
+   * Se esse arquivo não existir ou não tiver entrada para um capítulo,
+   * cai no fallback "Capítulo N".
+   */
+  async function descobrirCapitulosComSubtopicos() {
+    const tituloPorNumero = await carregarTitulosDosCapitulos();
+    const capitulos = [];
+
+    for (let numCap = 1; numCap <= 10; numCap++) {
+      const primeiroSubt = await fetchMd(path(`teoria/Cap${numCap}`, 'subt1.md'));
+      if (!primeiroSubt) break; // capítulo Cap{numCap} não existe — para a busca
+
+      const subtopicos = [{ numero: 1, conteudo: primeiroSubt, titulo: extrairTitulo(primeiroSubt) }];
+
+      for (let numSubt = 2; numSubt <= 20; numSubt++) {
+        const md = await fetchMd(path(`teoria/Cap${numCap}`, `subt${numSubt}.md`));
+        if (!md) break;
+        subtopicos.push({ numero: numSubt, conteudo: md, titulo: extrairTitulo(md) });
+      }
+
+      capitulos.push({
+        numero: numCap,
+        titulo: tituloPorNumero[numCap] || `Capítulo ${numCap}`,
+        subtopicos,
+      });
+    }
+
+    return capitulos;
+  }
+
+  /**
+   * Busca teoria/capitulos.json e retorna um mapa { numero: titulo }
+   * para lookup rápido. Retorna objeto vazio se o arquivo não existir
+   * — assim capítulos sem entrada no JSON simplesmente usam o
+   * fallback "Capítulo N" em vez de quebrar a página.
+   */
+  async function carregarTitulosDosCapitulos() {
+    const dados = await fetchJson(path('teoria', 'capitulos.json'));
+    if (!dados?.capitulos) return {};
+
+    const mapa = {};
+    dados.capitulos.forEach((c) => { mapa[c.numero] = c.titulo; });
+    return mapa;
+  }
+
+  /** Mostra a lista de subtópicos de um capítulo (2º nível da hierarquia). */
+  function abrirCapitulo(capitulo) {
+    cache.capituloAtual = capitulo;
+
     elConteudo.innerHTML = `
       <div class="modulo-aberto">
         <button class="btn-voltar-modulo" id="btnVoltarModulos">← Voltar aos módulos</button>
-        <div class="conteudo-md">${renderMd(capitulo.conteudo)}</div>
+        <h2 class="subtopicos-titulo">${escapeHtml(capitulo.titulo)}</h2>
+        ${renderizarListaDeItens(capitulo.subtopicos, 'A', 'Clique para ler →')}
       </div>
     `;
+
     document.getElementById('btnVoltarModulos').addEventListener('click', carregarModulos);
+    ligarCliquesNaLista('.modulo-card', capitulo.subtopicos, abrirSubtopico);
+  }
+
+  /** Mostra o conteúdo de um subtópico específico (3º nível da hierarquia). */
+  function abrirSubtopico(subtopico) {
+    const capitulo = cache.capituloAtual;
+
+    elConteudo.innerHTML = `
+      <div class="modulo-aberto">
+        <button class="btn-voltar-modulo" id="btnVoltarSubtopicos">← Voltar a ${escapeHtml(capitulo.titulo)}</button>
+        <div class="conteudo-md">${renderMd(subtopico.conteudo)}</div>
+      </div>
+    `;
+
+    document.getElementById('btnVoltarSubtopicos').addEventListener('click', () => abrirCapitulo(capitulo));
     renderizarFormulasLatex();
   }
 
