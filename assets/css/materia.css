@@ -227,6 +227,15 @@ body {
   color: var(--cor-texto-sec);
 }
 
+.conteudo-md img {
+  max-width: 100%;
+  height: auto;
+  margin: 16px 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  display: block;
+}
+
 .conteudo-md strong { color: #fff; font-weight: 700; }
 .conteudo-md em     { color: var(--cor-texto-sec); font-style: italic; }
 

@@ -448,6 +448,12 @@
   // --------------------------------------------------------
   function renderMd(md) {
     return md
+      // Imagens — precisa vir ANTES de qualquer outra regra que toque
+      // em texto entre colchetes/parênteses ou trate linhas como
+      // parágrafo, senão "![alt](url)" nunca chega a virar <img> e
+      // sobra como texto cru na tela.
+      .replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" loading="lazy" />')
+
       // Cabeçalhos
       .replace(/^### (.+)$/gm, '<h3>$1</h3>')
       .replace(/^## (.+)$/gm,  '<h2>$1</h2>')
